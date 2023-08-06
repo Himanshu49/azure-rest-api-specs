@@ -9,6 +9,7 @@ using TypeSpec.Http;
 
 namespace AzureLoadTesting;
 
+@tag("Test")
 interface LoadTestAdministration {
   @summary("Create a new test or update an existing test.")
   @doc("Create a new test or update an existing test.")
@@ -279,6 +280,7 @@ numeric, underscore or hyphen characters.
   >;
 }
 
+@tag("TestRuns")
 interface LoadTestRun {
   @summary("Get test run details by name.")
   @doc("Get test run details by name.")
@@ -492,8 +494,38 @@ The timespan of the query. It is a string with the following format
 
   @summary("List the dimension values for the given metric dimension name.")
   @doc("List the dimension values for the given metric dimension name.")
-  ListMetricDimensionValues is Azure.Core.ResourceList<
-    DimensionValueList, QueryParametersTrait<MetricDimensions>
+  @route("/test-runs/{testRunId}/metric-dimensions/{name}/values")
+  @get
+  ListMetricDimensionValues is Azure.Core.Foundations.Operation<
+    {
+      @path
+      testRunId: string;
+
+      @doc("Dimension name")
+      @path
+      name: string;
+
+      @doc("The interval (i.e. timegrain) of the query.")
+      @query
+      interval?: Interval;
+
+      @doc("Metric name")
+      @query
+      metricName: string;
+
+      @doc("Metric namespace to query metric definitions for.")
+      @query
+      metricNamespace: string;
+
+      @doc("""
+The timespan of the query. It is a string with the following format
+'startDateTime_ISO/endDateTime_ISO'.
+""")
+      @query
+      timespan: string;
+
+    },
+    DimensionValueList
   >;
 
   @summary("Associate an app component (collection of azure resources) to a test run")

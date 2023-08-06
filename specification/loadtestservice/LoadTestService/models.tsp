@@ -832,14 +832,12 @@ model DimensionValue {
   value?: string;
 }
 
-@resource("values")
 @parentResource(Dimension)
 model DimensionValueList {
   @key
   value: string[];
 }
 
-@resource("metric-dimensions")
 @parentResource(TestRuns)
 model Dimension {
   @key
