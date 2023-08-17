@@ -25,7 +25,7 @@ namespace AzureLoadTesting;
 
 enum APIVersions {
   @useDependency(Azure.Core.Versions.v1_0_Preview_2)
-  v2022_11_01: "2022-11-01",
+  v2023_04_01_preview: "2023-04-01-preview",
 }
 
 @doc("The Azure Active Directory OAuth2 Flow")

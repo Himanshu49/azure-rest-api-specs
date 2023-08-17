@@ -137,6 +137,9 @@ model Test {
   @doc("Pass fail criteria for a test.")
   passFailCriteria?: PassFailCriteria;
 
+  @doc("Auto stop criteria for a test.")
+  autoStopEnabled?: AutoStopCriteria;
+
   @doc("""
 Secrets can be stored in an Azure Key Vault or any other secret store. If the
 secret is stored in an Azure Key Vault, the value should be the secret
@@ -155,17 +158,25 @@ SECRET_VALUE.
   @doc("The load test configuration.")
   loadTestConfiguration?: LoadTestConfiguration;
 
+  @doc("The Test Run Id of the Test Run set as the Baseline.")
+  baselineTestRunId?: string;
+
   @doc("The input artifacts for the test.")
   @visibility("read")
   inputArtifacts?: TestInputArtifacts;
 
   @doc("Unique test name as identifier.")
+  @maxLength(50)
+  @minLength(2)
   @visibility("read")
   testId?: string;
 
+  @maxLength(100)
   @doc("The test description.")
   description?: string;
-
+  
+  @maxLength(50)
+  @minLength(2)
   @doc("Display name of a test.")
   displayName?: string;
 
@@ -180,7 +191,7 @@ SECRET_VALUE.
 
   @doc("The creation datetime(ISO 8601 literal format).")
   @visibility("read")
-  createdDateTime?: offsetDateTime;
+  createdDateTime?: utcDateTime;
 
   @doc("The user that created.")
   @visibility("read")
@@ -188,7 +199,7 @@ SECRET_VALUE.
 
   @doc("The last Modified datetime(ISO 8601 literal format).")
   @visibility("read")
-  lastModifiedDateTime?: offsetDateTime;
+  lastModifiedDateTime?: utcDateTime;
 
   @doc("The user that last modified.")
   @visibility("read")
@@ -259,6 +270,18 @@ model CertificateMetadata {
   name?: string;
 }
 
+@doc("Auto stop criteria for a test.")
+model AutoStopCriteria {
+  @doc("Auto stop is enabled or not")
+  autoStopEnabled?: boolean;
+
+  @doc("Value of auto stop criteria metric")
+  errorRate?: float32;
+
+  @doc("Time window in seconds for auto stop metric")
+  errorRateTimeWindow?: int64;
+}
+
 @doc("The load test configuration.")
 model LoadTestConfiguration {
   @doc("""
@@ -295,6 +318,12 @@ http://contoso-app.azurewebsites.net/login
 
   @doc("No of concurrent virtual users")
   virtualUsers?: int32;
+
+  @doc("Throughput required (requests per second)")
+  rps?: int32;
+
+  @doc("Maximum response time of the API/endpoint")
+  maxResponseTime?: int32;
 
   @doc("Ramp up time")
   rampUpTime?: int32;
@@ -386,7 +415,7 @@ subscriptions/{subId}/resourceGroups/{rg}/providers/Microsoft.LoadTestService/lo
 
   @doc("The creation datetime(ISO 8601 literal format).")
   @visibility("read")
-  createdDateTime?: offsetDateTime;
+  createdDateTime?: utcDateTime;
 
   @doc("The user that created.")
   @visibility("read")
@@ -394,7 +423,7 @@ subscriptions/{subId}/resourceGroups/{rg}/providers/Microsoft.LoadTestService/lo
 
   @doc("The last Modified datetime(ISO 8601 literal format).")
   @visibility("read")
-  lastModifiedDateTime?: offsetDateTime;
+  lastModifiedDateTime?: utcDateTime;
 
   @doc("The user that last modified.")
   @visibility("read")
@@ -449,7 +478,7 @@ for metric id).
 
   @doc("The creation datetime(ISO 8601 literal format).")
   @visibility("read")
-  createdDateTime?: offsetDateTime;
+  createdDateTime?: utcDateTime;
 
   @doc("The user that created.")
   @visibility("read")
@@ -457,7 +486,7 @@ for metric id).
 
   @doc("The last Modified datetime(ISO 8601 literal format).")
   @visibility("read")
-  lastModifiedDateTime?: offsetDateTime;
+  lastModifiedDateTime?: utcDateTime;
 
   @doc("The user that last modified.")
   @visibility("read")
@@ -496,23 +525,30 @@ model ResourceMetric {
   resourceType: string;
 }
 
-@doc("Load test run model")
-@resource("test-runs")
-model TestRuns {
-  // FIXME: is testRunId optional or required in the response? Resource key and path params cannot be optional
-  @key
-  @path
-  @doc("Unique test run name as identifier")
-  @visibility("read")
-  testRunId: string;
-}
+// @doc("Load test run model")
+// @resource("test-runs")
+// model TestRuns {
+//   // FIXME: is testRunId optional or required in the response? Resource key and path params cannot be optional
+//   @key
+//   @path
+//   @doc("Unique test run name as identifier")
+//   @visibility("read")
+//   testRunId: string;
+// }
 
 @doc("Load test run model")
 model TestRun {
-  ...TestRuns,
+  @doc("Unique test run name as identifier")
+  @visibility("read")
+  @maxLength(50)
+  @minLength(2)
+  testRunId?: string;
 
   @doc("Pass fail criteria for a test.")
   passFailCriteria?: PassFailCriteria;
+
+  @doc("Auto stop criteria for a test.")
+  autoStopEnabled?: AutoStopCriteria;
 
   @doc("""
 Secrets can be stored in an Azure Key Vault or any other secret store. If the
@@ -552,12 +588,17 @@ SECRET_VALUE.
   @visibility("read")
   virtualUsers?: int32;
 
+  @maxLength(50)
+  @minLength(2)
   @doc("Display name of a testRun.")
   displayName?: string;
 
+  @maxLength(50)
+  @minLength(2)
   @doc("Associated test Id.")
   testId?: string;
 
+  @maxLength(100)
   @doc("The test run description.")
   description?: string;
 
@@ -567,15 +608,15 @@ SECRET_VALUE.
 
   @doc("The test run start DateTime(ISO 8601 literal format).")
   @visibility("read")
-  startDateTime?: offsetDateTime;
+  startDateTime?: utcDateTime;
 
   @doc("The test run end DateTime(ISO 8601 literal format).")
   @visibility("read")
-  endDateTime?: offsetDateTime;
+  endDateTime?: utcDateTime;
 
   @doc("Test run initiated time.")
   @visibility("read")
-  executedDateTime?: offsetDateTime;
+  executedDateTime?: utcDateTime;
 
   @doc("Portal url.")
   @visibility("read")
@@ -591,7 +632,7 @@ SECRET_VALUE.
 
   @doc("The creation datetime(ISO 8601 literal format).")
   @visibility("read")
-  createdDateTime?: offsetDateTime;
+  createdDateTime?: utcDateTime;
 
   @doc("The user that created.")
   @visibility("read")
@@ -599,7 +640,7 @@ SECRET_VALUE.
 
   @doc("The last Modified datetime(ISO 8601 literal format).")
   @visibility("read")
-  lastModifiedDateTime?: offsetDateTime;
+  lastModifiedDateTime?: utcDateTime;
 
   @doc("The user that last modified.")
   @visibility("read")
@@ -838,7 +879,6 @@ model DimensionValueList {
   value: string[];
 }
 
-@parentResource(TestRuns)
 model Dimension {
   @key
   @doc("Dimension name")
@@ -883,7 +923,7 @@ subscriptions/{subId}/resourceGroups/{rg}/providers/Microsoft.LoadTestService/lo
 
   @doc("The creation datetime(ISO 8601 literal format).")
   @visibility("read")
-  createdDateTime?: offsetDateTime;
+  createdDateTime?: utcDateTime;
 
   @doc("The user that created.")
   @visibility("read")
@@ -891,7 +931,7 @@ subscriptions/{subId}/resourceGroups/{rg}/providers/Microsoft.LoadTestService/lo
 
   @doc("The last Modified datetime(ISO 8601 literal format).")
   @visibility("read")
-  lastModifiedDateTime?: offsetDateTime;
+  lastModifiedDateTime?: utcDateTime;
 
   @doc("The user that last modified.")
   @visibility("read")
@@ -913,7 +953,7 @@ for metric id).
 
   @doc("The creation datetime(ISO 8601 literal format).")
   @visibility("read")
-  createdDateTime?: offsetDateTime;
+  createdDateTime?: utcDateTime;
 
   @doc("The user that created.")
   @visibility("read")
@@ -921,7 +961,7 @@ for metric id).
 
   @doc("The last Modified datetime(ISO 8601 literal format).")
   @visibility("read")
-  lastModifiedDateTime?: offsetDateTime;
+  lastModifiedDateTime?: utcDateTime;
 
   @doc("The user that last modified.")
   @visibility("read")
