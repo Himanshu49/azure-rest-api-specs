@@ -1,5 +1,6 @@
 import "@typespec/rest";
 import "@typespec/http";
+import "@typespec/openapi";
 import "@azure-tools/typespec-azure-core";
 
 using TypeSpec.Rest;
@@ -169,6 +170,7 @@ enum LoadType{
   Spike,
 }
 
+@resource("load-tests")
 @doc("Load test model")
 model Test {
   @doc("Pass fail criteria for a test.")
@@ -208,7 +210,8 @@ SECRET_VALUE.
   @maxLength(50)
   @minLength(2)
   @visibility("read")
-  testId?: string;
+  @key
+  testId: string;
 
   @maxLength(100)
   @doc("The test description.")
@@ -354,7 +357,9 @@ not required to upload.
 }
 
 @doc("Quick test config")
-model QuickTestConfig {
+model QuickTestConfig extends OptionalLoadTestConfig{
+  testType: "QuickTest";
+
   @doc("Test URL. Provide the complete HTTP URL. For example, http://contoso-app.azurewebsites.net/login")
   endpointUrl?: string;
 
@@ -368,7 +373,9 @@ model QuickTestConfig {
 }
 
 @doc("Url test config")
-model UrlTestConfig {
+model UrlTestConfig extends OptionalLoadTestConfig {
+  testType: "URLTest";
+
   @added(APIVersions.v2023_04_01_preview)
   @doc("Number of steps in the ramp - up phase")
   rampUpSteps?: int32;  
@@ -386,12 +393,9 @@ model UrlTestConfig {
   loadType?: LoadType;    
 }
 
-@doc("Optional load test config")
+@discriminator("testType")
 model OptionalLoadTestConfig {
-  ...UrlTestConfig;
-
-  ...QuickTestConfig;
-
+  
   @doc("No of concurrent virtual users")
   virtualUsers?: int32;
 
@@ -399,7 +403,7 @@ model OptionalLoadTestConfig {
   rampUpTime?: int32;   
 
   @doc("Test run duration")
-  duration?: int32;     
+  duration?: int32; 
 }
 
 // @doc("Optional load test config")

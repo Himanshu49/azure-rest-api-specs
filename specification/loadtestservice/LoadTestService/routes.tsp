@@ -2,12 +2,14 @@ import "@azure-tools/typespec-azure-core";
 import "@typespec/rest";
 import "@typespec/http";
 import "./models.tsp";
+import "@azure-tools/typespec-autorest";
 
 using Azure.Core;
 using Azure.Core.Traits;
 using TypeSpec.Rest;
 using TypeSpec.Http;
 using TypeSpec.Versioning;
+using Autorest;
 
 namespace AzureLoadTesting;
 
@@ -80,6 +82,7 @@ subscriptions/{subId}/resourceGroups/{rg}/providers/Microsoft.LoadTestService/lo
 """)
   @route("/tests")
   @get
+  
   listTests is Azure.Core.Foundations.Operation<
     {
       @doc("""

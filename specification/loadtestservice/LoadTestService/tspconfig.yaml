@@ -3,6 +3,7 @@ parameters:
     default: "sdk/loadtesting"
 emit:
   - "@azure-tools/typespec-autorest"
+  - "@typespec/openapi3"
   # Uncomment this line and add "@azure-tools/typespec-python" to your package.json to generate Python code
   #- "@azure-tools/typespec-python"
   #- "@azure-tools/typespec-ts"
@@ -14,11 +15,11 @@ emit:
   # Uncomment this line and add "@azure-tools/typespec-ts" to your package.json to generate Typescript code
   # "@azure-tools/typespec-ts": true
 options:
-  # "@azure-tools/typespec-autorest":
+  "@azure-tools/typespec-autorest":
   #   emitter-output-dir: "{project-root}/../"
   #   output-file: "{azure-resource-provider-folder}/{service-name}/{version-status}/{version}/contentsafety.json"
   #   azure-resource-provider-folder: "data-plane"
-  #   examples-directory: ./examples
+    examples-directory: ./examples
   "@azure-tools/typespec-python":
     package-dir: "azure-developer-loadtesting"
     package-name: "{package-dir}"
