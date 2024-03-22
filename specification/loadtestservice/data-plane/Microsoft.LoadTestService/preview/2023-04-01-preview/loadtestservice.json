@@ -2038,6 +2038,47 @@
         ]
       }
     },
+    "DayRecurrence": {
+      "type": "object",
+      "properties": {
+        "interval": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "runTimeInUTC": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "runTimeInUTC"
+      ],
+      "allOf": [
+        {
+          "$ref": "#/definitions/Recurrence"
+        }
+      ],
+      "x-ms-discriminator-value": "Day"
+    },
+    "DayRecurrenceCreateOrUpdate": {
+      "type": "object",
+      "properties": {
+        "interval": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "runTimeInUTC": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "allOf": [
+        {
+          "$ref": "#/definitions/RecurrenceCreateOrUpdate"
+        }
+      ],
+      "x-ms-discriminator-value": "Day"
+    },
     "DimensionFilter": {
       "type": "object",
       "description": "Dimension name and values to filter",
@@ -2202,6 +2243,36 @@
         "name": "Frequency",
         "modelAsString": true
       }
+    },
+    "HourRecurrence": {
+      "type": "object",
+      "properties": {
+        "interval": {
+          "type": "integer",
+          "format": "int32"
+        }
+      },
+      "allOf": [
+        {
+          "$ref": "#/definitions/Recurrence"
+        }
+      ],
+      "x-ms-discriminator-value": "Hour"
+    },
+    "HourRecurrenceCreateOrUpdate": {
+      "type": "object",
+      "properties": {
+        "interval": {
+          "type": "integer",
+          "format": "int32"
+        }
+      },
+      "allOf": [
+        {
+          "$ref": "#/definitions/RecurrenceCreateOrUpdate"
+        }
+      ],
+      "x-ms-discriminator-value": "Hour"
     },
     "LoadTestConfiguration": {
       "type": "object",
@@ -2446,6 +2517,113 @@
       "required": [
         "value"
       ]
+    },
+    "MinuteRecurrence": {
+      "type": "object",
+      "properties": {
+        "interval": {
+          "type": "integer",
+          "format": "int32"
+        }
+      },
+      "allOf": [
+        {
+          "$ref": "#/definitions/Recurrence"
+        }
+      ],
+      "x-ms-discriminator-value": "Minute"
+    },
+    "MinuteRecurrenceCreateOrUpdate": {
+      "type": "object",
+      "properties": {
+        "interval": {
+          "type": "integer",
+          "format": "int32"
+        }
+      },
+      "allOf": [
+        {
+          "$ref": "#/definitions/RecurrenceCreateOrUpdate"
+        }
+      ],
+      "x-ms-discriminator-value": "Minute"
+    },
+    "MonthRecurrence": {
+      "type": "object",
+      "properties": {
+        "dateInMonth": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "weekDayInMonth": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "index": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "runTimeInUTC": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "interval": {
+          "type": "integer",
+          "format": "int32"
+        }
+      },
+      "required": [
+        "runTimeInUTC"
+      ],
+      "allOf": [
+        {
+          "$ref": "#/definitions/Recurrence"
+        }
+      ],
+      "x-ms-discriminator-value": "Month"
+    },
+    "MonthRecurrenceCreateOrUpdate": {
+      "type": "object",
+      "properties": {
+        "dateInMonth": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "weekDayInMonth": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "index": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "runTimeInUTC": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "interval": {
+          "type": "integer",
+          "format": "int32"
+        }
+      },
+      "allOf": [
+        {
+          "$ref": "#/definitions/RecurrenceCreateOrUpdate"
+        }
+      ],
+      "x-ms-discriminator-value": "Month"
     },
     "NameAndDesc": {
       "type": "object",
@@ -2846,6 +3024,7 @@
           "format": "int32"
         }
       },
+      "discriminator": "frequency",
       "required": [
         "frequency",
         "recurrenceRangeType",
@@ -2869,7 +3048,11 @@
           "type": "integer",
           "format": "int32"
         }
-      }
+      },
+      "discriminator": "frequency",
+      "required": [
+        "frequency"
+      ]
     },
     "RecurrenceRangeType": {
       "type": "string",
@@ -2882,6 +3065,37 @@
         "name": "RecurrenceRangeType",
         "modelAsString": true
       }
+    },
+    "RecurrenceWithCron": {
+      "type": "object",
+      "properties": {
+        "cronExpression": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "cronExpression"
+      ],
+      "allOf": [
+        {
+          "$ref": "#/definitions/Recurrence"
+        }
+      ],
+      "x-ms-discriminator-value": "Unspecified"
+    },
+    "RecurrenceWithCronCreateOrUpdate": {
+      "type": "object",
+      "properties": {
+        "cronExpression": {
+          "type": "string"
+        }
+      },
+      "allOf": [
+        {
+          "$ref": "#/definitions/RecurrenceCreateOrUpdate"
+        }
+      ],
+      "x-ms-discriminator-value": "Unspecified"
     },
     "ResourceMetric": {
       "type": "object",
@@ -4186,6 +4400,116 @@
         "name": "TriggerType",
         "modelAsString": true
       }
+    },
+    "WeekRecurrence": {
+      "type": "object",
+      "properties": {
+        "daysOfWeek": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "runTimeInUTC": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "interval": {
+          "type": "integer",
+          "format": "int32"
+        }
+      },
+      "required": [
+        "runTimeInUTC"
+      ],
+      "allOf": [
+        {
+          "$ref": "#/definitions/Recurrence"
+        }
+      ],
+      "x-ms-discriminator-value": "Week"
+    },
+    "WeekRecurrenceCreateOrUpdate": {
+      "type": "object",
+      "properties": {
+        "daysOfWeek": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "runTimeInUTC": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "interval": {
+          "type": "integer",
+          "format": "int32"
+        }
+      },
+      "allOf": [
+        {
+          "$ref": "#/definitions/RecurrenceCreateOrUpdate"
+        }
+      ],
+      "x-ms-discriminator-value": "Week"
+    },
+    "YearRecurrence": {
+      "type": "object",
+      "properties": {
+        "daysOfWeek": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "runTimeInUTC": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "interval": {
+          "type": "integer",
+          "format": "int32"
+        }
+      },
+      "required": [
+        "runTimeInUTC"
+      ],
+      "allOf": [
+        {
+          "$ref": "#/definitions/Recurrence"
+        }
+      ],
+      "x-ms-discriminator-value": "Year"
+    },
+    "YearRecurrenceCreateOrUpdate": {
+      "type": "object",
+      "properties": {
+        "daysOfWeek": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "runTimeInUTC": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "interval": {
+          "type": "integer",
+          "format": "int32"
+        }
+      },
+      "allOf": [
+        {
+          "$ref": "#/definitions/RecurrenceCreateOrUpdate"
+        }
+      ],
+      "x-ms-discriminator-value": "Year"
     }
   },
   "parameters": {

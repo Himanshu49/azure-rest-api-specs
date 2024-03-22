@@ -1073,23 +1073,27 @@ model ScheduleTestTrigger is Trigger{
 }
 
 @added(APIVersions.v2023_04_01_preview)
-model DayRecurrence is Recurrence{
+model DayRecurrence extends Recurrence{
+  frequency: Frequency.Day;
   interval?: int32;
   runTimeInUTC: utcDateTime;
 }
 
 @added(APIVersions.v2023_04_01_preview)
-model HourRecurrence is Recurrence{
+model HourRecurrence extends Recurrence{
+  frequency: Frequency.Hour;
   interval?: int32;
 }
 
 @added(APIVersions.v2023_04_01_preview)
-model MinuteRecurrence is Recurrence{
+model MinuteRecurrence extends Recurrence{
+  frequency: Frequency.Minute;
   interval?: int32;
 }
 
 @added(APIVersions.v2023_04_01_preview)
-model MonthRecurrence is Recurrence{
+model MonthRecurrence extends Recurrence{
+  frequency: Frequency.Month;
   dateInMonth?: int32[];
   weekDayInMonth?: int32[];
   index?: int32;
@@ -1098,25 +1102,29 @@ model MonthRecurrence is Recurrence{
 }
 
 @added(APIVersions.v2023_04_01_preview)
-model RecurrenceWithCron is Recurrence{
+model RecurrenceWithCron extends Recurrence{
+  frequency: Frequency.Unspecified;
   cronExpression: string;
 }
 
 @added(APIVersions.v2023_04_01_preview)
-model WeekRecurrence is Recurrence{
+model WeekRecurrence extends Recurrence{
+  frequency: Frequency.Week;
   daysOfWeek?: int32[];
   runTimeInUTC: utcDateTime;
   interval?: int32;
 }
 
 @added(APIVersions.v2023_04_01_preview)
-model YearRecurrence is Recurrence{
+model YearRecurrence extends Recurrence{
+  frequency: Frequency.Year;
   daysOfWeek?: int32[];
   runTimeInUTC: utcDateTime;
   interval?: int32;
 }
 
 @added(APIVersions.v2023_04_01_preview)
+@discriminator("frequency")
 model Recurrence {
   frequency: Frequency;
   recurrenceRangeType: RecurrenceRangeType;
@@ -1125,15 +1133,14 @@ model Recurrence {
 }
 
 @added(APIVersions.v2023_04_01_preview)
-@discriminator("frequency")
-union Frequency {
-  unspecified: Unspecified,
-  minute: Minute,
-  hour: Hour,
-  day: Day,
-  week: Week,
-  month: Month,
-  year: Year
+enum Frequency {
+  Unspecified,
+  Minute,
+  Hour,
+  Day,
+  Week,
+  Month,
+  Year
 }
 
 @added(APIVersions.v2023_04_01_preview)
