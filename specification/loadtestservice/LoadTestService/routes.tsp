@@ -433,3 +433,16 @@ numeric, underscore or hyphen characters.
     TestRunServerMetricConfig
   >;
 }
+
+@tag("ScheduleTrigger")
+@added(APIVersions.v2023_04_01_preview)
+interface ScheduleTrigger {
+  getTrigger is StandardResourceOperations.ResourceRead<ScheduleTestTrigger>;
+
+  createorUpdateTrigger is StandardResourceOperations.ResourceCreateOrUpdate<ScheduleTestTrigger>;
+
+  deleteTrigger is StandardResourceOperations.ResourceDelete<ScheduleTestTrigger>;
+
+  listTrigger is StandardResourceOperations.ResourceList<ScheduleTestTrigger>;
+
+}

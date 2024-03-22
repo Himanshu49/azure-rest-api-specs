@@ -55,6 +55,9 @@
     },
     {
       "name": "TestRun"
+    },
+    {
+      "name": "ScheduleTrigger"
     }
   ],
   "paths": {
@@ -1609,6 +1612,175 @@
           }
         }
       }
+    },
+    "/trigger": {
+      "get": {
+        "operationId": "ScheduleTrigger_ListTrigger",
+        "tags": [
+          "ScheduleTrigger"
+        ],
+        "description": "Resource list operation template.",
+        "parameters": [
+          {
+            "$ref": "#/parameters/Azure.Core.Foundations.ApiVersionParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "schema": {
+              "$ref": "#/definitions/PagedScheduleTestTrigger"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/Azure.Core.Foundations.ErrorResponse"
+            },
+            "headers": {
+              "x-ms-error-code": {
+                "type": "string",
+                "description": "String error code indicating what went wrong."
+              }
+            }
+          }
+        },
+        "x-ms-pageable": {
+          "nextLinkName": "nextLink"
+        }
+      }
+    },
+    "/trigger/{triggerId}": {
+      "get": {
+        "operationId": "ScheduleTrigger_GetTrigger",
+        "tags": [
+          "ScheduleTrigger"
+        ],
+        "description": "Resource read operation template.",
+        "parameters": [
+          {
+            "$ref": "#/parameters/Azure.Core.Foundations.ApiVersionParameter"
+          },
+          {
+            "name": "triggerId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "schema": {
+              "$ref": "#/definitions/ScheduleTestTrigger"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/Azure.Core.Foundations.ErrorResponse"
+            },
+            "headers": {
+              "x-ms-error-code": {
+                "type": "string",
+                "description": "String error code indicating what went wrong."
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "operationId": "ScheduleTrigger_CreateorUpdateTrigger",
+        "tags": [
+          "ScheduleTrigger"
+        ],
+        "description": "Create or update operation template.",
+        "consumes": [
+          "application/merge-patch+json"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/Azure.Core.Foundations.ApiVersionParameter"
+          },
+          {
+            "name": "triggerId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "The resource instance.",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ScheduleTestTriggerCreateOrUpdate"
+            },
+            "x-ms-client-name": "resource"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "schema": {
+              "$ref": "#/definitions/ScheduleTestTrigger"
+            }
+          },
+          "201": {
+            "description": "The request has succeeded and a new resource has been created as a result.",
+            "schema": {
+              "$ref": "#/definitions/ScheduleTestTrigger"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/Azure.Core.Foundations.ErrorResponse"
+            },
+            "headers": {
+              "x-ms-error-code": {
+                "type": "string",
+                "description": "String error code indicating what went wrong."
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "ScheduleTrigger_DeleteTrigger",
+        "tags": [
+          "ScheduleTrigger"
+        ],
+        "description": "Resource delete operation template.",
+        "parameters": [
+          {
+            "$ref": "#/parameters/Azure.Core.Foundations.ApiVersionParameter"
+          },
+          {
+            "name": "triggerId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "There is no content to send for this request, but the headers may be useful. "
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/Azure.Core.Foundations.ErrorResponse"
+            },
+            "headers": {
+              "x-ms-error-code": {
+                "type": "string",
+                "description": "String error code indicating what went wrong."
+              }
+            }
+          }
+        }
+      }
     }
   },
   "definitions": {
@@ -2013,6 +2185,22 @@
             "description": "If the file is a JSON config file to define the requests for a URL test."
           }
         ]
+      }
+    },
+    "Frequency": {
+      "type": "string",
+      "enum": [
+        "Unspecified",
+        "Minute",
+        "Hour",
+        "Day",
+        "Week",
+        "Month",
+        "Year"
+      ],
+      "x-ms-enum": {
+        "name": "Frequency",
+        "modelAsString": true
       }
     },
     "LoadTestConfiguration": {
@@ -2476,6 +2664,28 @@
         ]
       }
     },
+    "PagedScheduleTestTrigger": {
+      "type": "object",
+      "description": "Paged collection of ScheduleTestTrigger items",
+      "properties": {
+        "value": {
+          "type": "array",
+          "description": "The ScheduleTestTrigger items on this page",
+          "items": {
+            "$ref": "#/definitions/ScheduleTestTrigger"
+          },
+          "x-ms-identifiers": []
+        },
+        "nextLink": {
+          "type": "string",
+          "format": "uri",
+          "description": "The link to the next page of items"
+        }
+      },
+      "required": [
+        "value"
+      ]
+    },
     "PagedTest": {
       "type": "object",
       "description": "Paged collection of Test items",
@@ -2618,6 +2828,61 @@
         }
       }
     },
+    "Recurrence": {
+      "type": "object",
+      "properties": {
+        "frequency": {
+          "$ref": "#/definitions/Frequency"
+        },
+        "recurrenceRangeType": {
+          "$ref": "#/definitions/RecurrenceRangeType"
+        },
+        "endTimeInUTC": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "numberOfOccurrences": {
+          "type": "integer",
+          "format": "int32"
+        }
+      },
+      "required": [
+        "frequency",
+        "recurrenceRangeType",
+        "endTimeInUTC"
+      ]
+    },
+    "RecurrenceCreateOrUpdate": {
+      "type": "object",
+      "properties": {
+        "frequency": {
+          "$ref": "#/definitions/Frequency"
+        },
+        "recurrenceRangeType": {
+          "$ref": "#/definitions/RecurrenceRangeType"
+        },
+        "endTimeInUTC": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "numberOfOccurrences": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "RecurrenceRangeType": {
+      "type": "string",
+      "enum": [
+        "EndDate",
+        "EndAfterOccurences",
+        "NeverEnd"
+      ],
+      "x-ms-enum": {
+        "name": "RecurrenceRangeType",
+        "modelAsString": true
+      }
+    },
     "ResourceMetric": {
       "type": "object",
       "description": "Associated metric definition for particular metrics of the azure resource (\nRefer :\nhttps://docs.microsoft.com/en-us/rest/api/monitor/metric-definitions/list#metricdefinition).",
@@ -2695,6 +2960,81 @@
         "resourceType": {
           "type": "string",
           "description": "Azure resource type."
+        }
+      }
+    },
+    "ScheduleTestTrigger": {
+      "type": "object",
+      "properties": {
+        "triggerName": {
+          "type": "string"
+        },
+        "triggerId": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "triggerAction": {
+          "$ref": "#/definitions/TriggerAction"
+        },
+        "type": {
+          "$ref": "#/definitions/TriggerType"
+        },
+        "state": {
+          "$ref": "#/definitions/TriggerState"
+        },
+        "startTimeInUTC": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "isRecurring": {
+          "type": "boolean"
+        },
+        "recurrence": {
+          "$ref": "#/definitions/Recurrence"
+        }
+      },
+      "required": [
+        "triggerName",
+        "triggerId",
+        "description",
+        "triggerAction",
+        "type",
+        "state",
+        "recurrence"
+      ]
+    },
+    "ScheduleTestTriggerCreateOrUpdate": {
+      "type": "object",
+      "properties": {
+        "triggerName": {
+          "type": "string"
+        },
+        "triggerId": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "triggerAction": {
+          "$ref": "#/definitions/TriggerAction"
+        },
+        "type": {
+          "$ref": "#/definitions/TriggerType"
+        },
+        "state": {
+          "$ref": "#/definitions/TriggerState"
+        },
+        "startTimeInUTC": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "isRecurring": {
+          "type": "boolean"
+        },
+        "recurrence": {
+          "$ref": "#/definitions/RecurrenceCreateOrUpdate"
         }
       }
     },
@@ -3811,6 +4151,40 @@
           },
           "x-ms-identifiers": []
         }
+      }
+    },
+    "TriggerAction": {
+      "type": "string",
+      "enum": [
+        "SingleTestRun",
+        "MultipleTestRuns"
+      ],
+      "x-ms-enum": {
+        "name": "TriggerAction",
+        "modelAsString": true
+      }
+    },
+    "TriggerState": {
+      "type": "string",
+      "enum": [
+        "Active",
+        "Paused",
+        "Completed",
+        "Disabled"
+      ],
+      "x-ms-enum": {
+        "name": "TriggerState",
+        "modelAsString": true
+      }
+    },
+    "TriggerType": {
+      "type": "string",
+      "enum": [
+        "ScheduleTrigger"
+      ],
+      "x-ms-enum": {
+        "name": "TriggerType",
+        "modelAsString": true
       }
     }
   },

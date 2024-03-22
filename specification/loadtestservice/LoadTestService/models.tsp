@@ -1058,3 +1058,117 @@ alias ResourceCreatedResponse<T extends TypeSpec.Reflection.Model> = TypeSpec.Ht
 
 alias ResourceCreatedOrOkResponse<T extends TypeSpec.Reflection.Model> = ResourceCreatedResponse<T> | (TypeSpec.Http.Response<200> &
   T);
+
+
+@added(APIVersions.v2023_04_01_preview)
+model MultipleTestsTrigger is Trigger {
+  TestIds: string[];
+}
+
+@added(APIVersions.v2023_04_01_preview)
+model ScheduleTestTrigger is Trigger{
+  startTimeInUTC?: utcDateTime;
+  isRecurring?: boolean;
+  recurrence: Recurrence;
+}
+
+@added(APIVersions.v2023_04_01_preview)
+model DayRecurrence is Recurrence{
+  interval?: int32;
+  runTimeInUTC: utcDateTime;
+}
+
+@added(APIVersions.v2023_04_01_preview)
+model HourRecurrence is Recurrence{
+  interval?: int32;
+}
+
+@added(APIVersions.v2023_04_01_preview)
+model MinuteRecurrence is Recurrence{
+  interval?: int32;
+}
+
+@added(APIVersions.v2023_04_01_preview)
+model MonthRecurrence is Recurrence{
+  dateInMonth?: int32[];
+  weekDayInMonth?: int32[];
+  index?: int32;
+  runTimeInUTC: utcDateTime;
+  interval?: int32;
+}
+
+@added(APIVersions.v2023_04_01_preview)
+model RecurrenceWithCron is Recurrence{
+  cronExpression: string;
+}
+
+@added(APIVersions.v2023_04_01_preview)
+model WeekRecurrence is Recurrence{
+  daysOfWeek?: int32[];
+  runTimeInUTC: utcDateTime;
+  interval?: int32;
+}
+
+@added(APIVersions.v2023_04_01_preview)
+model YearRecurrence is Recurrence{
+  daysOfWeek?: int32[];
+  runTimeInUTC: utcDateTime;
+  interval?: int32;
+}
+
+@added(APIVersions.v2023_04_01_preview)
+model Recurrence {
+  frequency: Frequency;
+  recurrenceRangeType: RecurrenceRangeType;
+  endTimeInUTC: utcDateTime;
+  numberOfOccurrences?: int32;
+}
+
+@added(APIVersions.v2023_04_01_preview)
+@discriminator("frequency")
+union Frequency {
+  unspecified: Unspecified,
+  minute: Minute,
+  hour: Hour,
+  day: Day,
+  week: Week,
+  month: Month,
+  year: Year
+}
+
+@added(APIVersions.v2023_04_01_preview)
+enum RecurrenceRangeType {
+  EndDate,
+  EndAfterOccurences,
+  NeverEnd
+}
+@added(APIVersions.v2023_04_01_preview)
+@resource("trigger")
+model Trigger {
+  triggerName: string;
+  @key
+  triggerId: string;
+  description: string;
+  triggerAction: TriggerAction;
+  type: TriggerType;
+  state: TriggerState;
+}
+
+@added(APIVersions.v2023_04_01_preview)
+enum TriggerAction {
+  SingleTestRun,
+  MultipleTestRuns
+}
+
+@added(APIVersions.v2023_04_01_preview)
+enum TriggerState {
+  Active,
+  Paused,
+  Completed,
+  Disabled
+}
+
+@added(APIVersions.v2023_04_01_preview)
+enum TriggerType {
+  ScheduleTrigger,
+}
