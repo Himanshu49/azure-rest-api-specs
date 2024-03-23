@@ -2625,6 +2625,41 @@
       ],
       "x-ms-discriminator-value": "Month"
     },
+    "MultipleTestsTrigger": {
+      "type": "object",
+      "properties": {
+        "testIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "testIds"
+      ],
+      "allOf": [
+        {
+          "$ref": "#/definitions/Trigger"
+        }
+      ]
+    },
+    "MultipleTestsTriggerCreateOrUpdate": {
+      "type": "object",
+      "properties": {
+        "testIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "allOf": [
+        {
+          "$ref": "#/definitions/TriggerCreateOrUpdate"
+        }
+      ]
+    },
     "NameAndDesc": {
       "type": "object",
       "description": "The name and description",
@@ -3180,24 +3215,6 @@
     "ScheduleTestTrigger": {
       "type": "object",
       "properties": {
-        "triggerName": {
-          "type": "string"
-        },
-        "triggerId": {
-          "type": "string"
-        },
-        "description": {
-          "type": "string"
-        },
-        "triggerAction": {
-          "$ref": "#/definitions/TriggerAction"
-        },
-        "type": {
-          "$ref": "#/definitions/TriggerType"
-        },
-        "state": {
-          "$ref": "#/definitions/TriggerState"
-        },
         "startTimeInUTC": {
           "type": "string",
           "format": "date-time"
@@ -3210,36 +3227,17 @@
         }
       },
       "required": [
-        "triggerName",
-        "triggerId",
-        "description",
-        "triggerAction",
-        "type",
-        "state",
         "recurrence"
+      ],
+      "allOf": [
+        {
+          "$ref": "#/definitions/SingleTestTrigger"
+        }
       ]
     },
     "ScheduleTestTriggerCreateOrUpdate": {
       "type": "object",
       "properties": {
-        "triggerName": {
-          "type": "string"
-        },
-        "triggerId": {
-          "type": "string"
-        },
-        "description": {
-          "type": "string"
-        },
-        "triggerAction": {
-          "$ref": "#/definitions/TriggerAction"
-        },
-        "type": {
-          "$ref": "#/definitions/TriggerType"
-        },
-        "state": {
-          "$ref": "#/definitions/TriggerState"
-        },
         "startTimeInUTC": {
           "type": "string",
           "format": "date-time"
@@ -3250,7 +3248,12 @@
         "recurrence": {
           "$ref": "#/definitions/RecurrenceCreateOrUpdate"
         }
-      }
+      },
+      "allOf": [
+        {
+          "$ref": "#/definitions/SingleTestTriggerCreateOrUpdate"
+        }
+      ]
     },
     "Secret": {
       "type": "object",
@@ -3289,6 +3292,35 @@
           }
         ]
       }
+    },
+    "SingleTestTrigger": {
+      "type": "object",
+      "properties": {
+        "testId": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "testId"
+      ],
+      "allOf": [
+        {
+          "$ref": "#/definitions/Trigger"
+        }
+      ]
+    },
+    "SingleTestTriggerCreateOrUpdate": {
+      "type": "object",
+      "properties": {
+        "testId": {
+          "type": "string"
+        }
+      },
+      "allOf": [
+        {
+          "$ref": "#/definitions/TriggerCreateOrUpdate"
+        }
+      ]
     },
     "Status": {
       "type": "string",
@@ -4367,6 +4399,37 @@
         }
       }
     },
+    "Trigger": {
+      "type": "object",
+      "properties": {
+        "triggerName": {
+          "type": "string"
+        },
+        "triggerId": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "triggerAction": {
+          "$ref": "#/definitions/TriggerAction"
+        },
+        "type": {
+          "$ref": "#/definitions/TriggerType"
+        },
+        "state": {
+          "$ref": "#/definitions/TriggerState"
+        }
+      },
+      "required": [
+        "triggerName",
+        "triggerId",
+        "description",
+        "triggerAction",
+        "type",
+        "state"
+      ]
+    },
     "TriggerAction": {
       "type": "string",
       "enum": [
@@ -4376,6 +4439,29 @@
       "x-ms-enum": {
         "name": "TriggerAction",
         "modelAsString": true
+      }
+    },
+    "TriggerCreateOrUpdate": {
+      "type": "object",
+      "properties": {
+        "triggerName": {
+          "type": "string"
+        },
+        "triggerId": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "triggerAction": {
+          "$ref": "#/definitions/TriggerAction"
+        },
+        "type": {
+          "$ref": "#/definitions/TriggerType"
+        },
+        "state": {
+          "$ref": "#/definitions/TriggerState"
+        }
       }
     },
     "TriggerState": {

@@ -1061,12 +1061,17 @@ alias ResourceCreatedOrOkResponse<T extends TypeSpec.Reflection.Model> = Resourc
 
 
 @added(APIVersions.v2023_04_01_preview)
-model MultipleTestsTrigger is Trigger {
-  TestIds: string[];
+model MultipleTestsTrigger extends Trigger {
+  testIds: string[];
 }
 
 @added(APIVersions.v2023_04_01_preview)
-model ScheduleTestTrigger is Trigger{
+model SingleTestTrigger extends Trigger {
+  testId: string;
+}
+
+@added(APIVersions.v2023_04_01_preview)
+model ScheduleTestTrigger extends SingleTestTrigger{
   startTimeInUTC?: utcDateTime;
   isRecurring?: boolean;
   recurrence: Recurrence;
