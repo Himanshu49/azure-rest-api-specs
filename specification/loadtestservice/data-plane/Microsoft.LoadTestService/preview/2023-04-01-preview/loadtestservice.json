@@ -55,6 +55,9 @@
     },
     {
       "name": "TestRun"
+    },
+    {
+      "name": "Triggers"
     }
   ],
   "paths": {
@@ -1609,6 +1612,178 @@
           }
         }
       }
+    },
+    "/trigger": {
+      "get": {
+        "operationId": "Triggers_ListTrigger",
+        "tags": [
+          "Triggers"
+        ],
+        "description": "Resource list operation template.",
+        "parameters": [
+          {
+            "$ref": "#/parameters/Azure.Core.Foundations.ApiVersionParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "schema": {
+              "$ref": "#/definitions/PagedTrigger"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/Azure.Core.Foundations.ErrorResponse"
+            },
+            "headers": {
+              "x-ms-error-code": {
+                "type": "string",
+                "description": "String error code indicating what went wrong."
+              }
+            }
+          }
+        },
+        "x-ms-pageable": {
+          "nextLinkName": "nextLink"
+        }
+      }
+    },
+    "/trigger/{triggerId}": {
+      "get": {
+        "operationId": "Triggers_GetTrigger",
+        "tags": [
+          "Triggers"
+        ],
+        "description": "Resource read operation template.",
+        "parameters": [
+          {
+            "$ref": "#/parameters/Azure.Core.Foundations.ApiVersionParameter"
+          },
+          {
+            "name": "triggerId",
+            "in": "path",
+            "description": "The unique identifier of the trigger.",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "schema": {
+              "$ref": "#/definitions/Trigger"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/Azure.Core.Foundations.ErrorResponse"
+            },
+            "headers": {
+              "x-ms-error-code": {
+                "type": "string",
+                "description": "String error code indicating what went wrong."
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "operationId": "Triggers_CreateorUpdateTrigger",
+        "tags": [
+          "Triggers"
+        ],
+        "description": "Create or update operation template.",
+        "consumes": [
+          "application/merge-patch+json"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/Azure.Core.Foundations.ApiVersionParameter"
+          },
+          {
+            "name": "triggerId",
+            "in": "path",
+            "description": "The unique identifier of the trigger.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "The resource instance.",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/TriggerCreateOrUpdate"
+            },
+            "x-ms-client-name": "resource"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "schema": {
+              "$ref": "#/definitions/Trigger"
+            }
+          },
+          "201": {
+            "description": "The request has succeeded and a new resource has been created as a result.",
+            "schema": {
+              "$ref": "#/definitions/Trigger"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/Azure.Core.Foundations.ErrorResponse"
+            },
+            "headers": {
+              "x-ms-error-code": {
+                "type": "string",
+                "description": "String error code indicating what went wrong."
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "Triggers_DeleteTrigger",
+        "tags": [
+          "Triggers"
+        ],
+        "description": "Resource delete operation template.",
+        "parameters": [
+          {
+            "$ref": "#/parameters/Azure.Core.Foundations.ApiVersionParameter"
+          },
+          {
+            "name": "triggerId",
+            "in": "path",
+            "description": "The unique identifier of the trigger.",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "There is no content to send for this request, but the headers may be useful. "
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/Azure.Core.Foundations.ErrorResponse"
+            },
+            "headers": {
+              "x-ms-error-code": {
+                "type": "string",
+                "description": "String error code indicating what went wrong."
+              }
+            }
+          }
+        }
+      }
     }
   },
   "definitions": {
@@ -2529,6 +2704,28 @@
           "description": "The TestRun items on this page",
           "items": {
             "$ref": "#/definitions/TestRun"
+          },
+          "x-ms-identifiers": []
+        },
+        "nextLink": {
+          "type": "string",
+          "format": "uri",
+          "description": "The link to the next page of items"
+        }
+      },
+      "required": [
+        "value"
+      ]
+    },
+    "PagedTrigger": {
+      "type": "object",
+      "description": "Paged collection of Trigger items",
+      "properties": {
+        "value": {
+          "type": "array",
+          "description": "The Trigger items on this page",
+          "items": {
+            "$ref": "#/definitions/Trigger"
           },
           "x-ms-identifiers": []
         },
@@ -3811,6 +4008,119 @@
           },
           "x-ms-identifiers": []
         }
+      }
+    },
+    "Trigger": {
+      "type": "object",
+      "description": "Trigger model.",
+      "properties": {
+        "triggerName": {
+          "type": "string",
+          "description": "The name of the trigger."
+        },
+        "triggerId": {
+          "type": "string",
+          "description": "The unique identifier of the trigger."
+        },
+        "description": {
+          "type": "string",
+          "description": "The description of the trigger."
+        },
+        "triggerType": {
+          "$ref": "#/definitions/TriggerType",
+          "description": "The type of the trigger."
+        },
+        "triggerState": {
+          "$ref": "#/definitions/TriggerState",
+          "description": "The current state of the trigger."
+        }
+      },
+      "discriminator": "triggerType",
+      "required": [
+        "triggerName",
+        "triggerId",
+        "description",
+        "triggerType",
+        "triggerState"
+      ]
+    },
+    "TriggerCreateOrUpdate": {
+      "type": "object",
+      "description": "Trigger model.",
+      "properties": {
+        "triggerName": {
+          "type": "string",
+          "description": "The name of the trigger."
+        },
+        "triggerId": {
+          "type": "string",
+          "description": "The unique identifier of the trigger."
+        },
+        "description": {
+          "type": "string",
+          "description": "The description of the trigger."
+        },
+        "triggerType": {
+          "$ref": "#/definitions/TriggerType",
+          "description": "The type of the trigger."
+        },
+        "triggerState": {
+          "$ref": "#/definitions/TriggerState",
+          "description": "The current state of the trigger."
+        }
+      },
+      "discriminator": "triggerType",
+      "required": [
+        "triggerType"
+      ]
+    },
+    "TriggerState": {
+      "type": "string",
+      "description": "Current state of a trigger.",
+      "enum": [
+        "Active",
+        "Paused",
+        "Completed",
+        "Disabled"
+      ],
+      "x-ms-enum": {
+        "name": "TriggerState",
+        "modelAsString": true,
+        "values": [
+          {
+            "name": "Active",
+            "value": "Active"
+          },
+          {
+            "name": "Paused",
+            "value": "Paused"
+          },
+          {
+            "name": "Completed",
+            "value": "Completed"
+          },
+          {
+            "name": "Disabled",
+            "value": "Disabled"
+          }
+        ]
+      }
+    },
+    "TriggerType": {
+      "type": "string",
+      "description": "Type of a trigger.",
+      "enum": [
+        "ScheduleTrigger"
+      ],
+      "x-ms-enum": {
+        "name": "TriggerType",
+        "modelAsString": true,
+        "values": [
+          {
+            "name": "ScheduleTrigger",
+            "value": "ScheduleTrigger"
+          }
+        ]
       }
     }
   },

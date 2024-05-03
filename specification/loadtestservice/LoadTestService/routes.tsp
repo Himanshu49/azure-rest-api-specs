@@ -438,3 +438,16 @@ numeric, underscore or hyphen characters.
     TestRunServerMetricConfig
   >;
 }
+
+@tag("Triggers")
+@added(APIVersions.v2023_04_01_preview)
+interface Triggers {
+  getTrigger is StandardResourceOperations.ResourceRead<Trigger>;
+
+  createorUpdateTrigger is StandardResourceOperations.ResourceCreateOrUpdate<Trigger>;
+
+  deleteTrigger is StandardResourceOperations.ResourceDelete<Trigger>;
+
+  listTrigger is StandardResourceOperations.ResourceList<Trigger>;
+
+}

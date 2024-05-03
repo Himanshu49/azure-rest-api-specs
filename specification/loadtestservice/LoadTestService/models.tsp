@@ -1079,3 +1079,230 @@ alias ResourceCreatedResponse<T extends TypeSpec.Reflection.Model> = TypeSpec.Ht
 
 alias ResourceCreatedOrOkResponse<T extends TypeSpec.Reflection.Model> = ResourceCreatedResponse<T> | (TypeSpec.Http.Response<200> &
   T);
+
+@added(APIVersions.v2023_04_01_preview)
+@doc("Frequency of reccurence for a trigger.")
+union Frequency {
+  string,
+  Cron: "Cron",
+  Minute: "Minute",
+  Hour: "Hour",
+  Day: "Day",
+  Week: "Week",
+  MonthByDays: "MonthByDays",
+  MonthByDates: "MonthByDates",
+  Year: "Year",
+}
+
+@added(APIVersions.v2023_04_01_preview)
+@doc("Recurrence range type for a trigger.")
+union RecurrenceRangeType {
+  string,
+  /**Signifies recurrence will end after EndDate. */ 
+  EndDate: "EndDate",
+  /**Signifies recurrence will end after NumberOfOccurrences. */
+  EndAfterOccurences: "EndAfterOccurences",
+  /**Signifies recurrence will never end. */
+  NeverEnd: "NeverEnd",
+}
+
+@added(APIVersions.v2023_04_01_preview)
+@doc("Current state of a trigger.")
+union TriggerState {
+  string,
+  Active: "Active",
+  Paused: "Paused",
+  Completed: "Completed",
+  Disabled: "Disabled",
+}
+
+@added(APIVersions.v2023_04_01_preview)
+@doc("Type of a trigger.")
+union TriggerType {
+  string,
+  ScheduleTrigger: "ScheduleTrigger",
+}
+
+@added(APIVersions.v2023_04_01_preview)
+@doc("ScheduleTestsTrigger model.")
+model ScheduleTestsTrigger extends ScheduleTrigger{
+  @doc("The type of the trigger is ScheduleTrigger.")
+  triggerType: TriggerType.ScheduleTrigger;
+  @doc("The test ids to be triggered by this schedule trigger.")
+  testids: string[];
+}
+
+@added(APIVersions.v2023_04_01_preview)
+@doc("ScheduleTrigger model.")
+model ScheduleTrigger is Trigger{
+  @doc("Start time of the trigger in UTC timezone.")
+  #suppress "@azure-tools/typespec-azure-core/casing-style" "UTC is an abbervation and should be all caps"
+  startTimeInUTC?: utcDateTime;
+  @doc("Whether the trigger is recurring. Default is false.")
+  isRecurring?: boolean = false;
+  @doc("Recurrence details of the trigger.")
+  recurrence: Recurrence;
+}
+
+@added(APIVersions.v2023_04_01_preview)
+@resource("trigger")
+@discriminator("triggerType")
+@doc("Trigger model.")
+model Trigger {
+  @doc("The name of the trigger.")
+  triggerName: string;
+  @key
+  @doc("The unique identifier of the trigger.")
+  triggerId: string;
+  @doc("The description of the trigger.")
+  description: string;
+  @doc("The type of the trigger.")
+  triggerType: TriggerType;
+  @doc("The current state of the trigger.")
+  triggerState: TriggerState;
+}
+
+@added(APIVersions.v2023_04_01_preview)
+@doc("Day recurrence model when frequency is set as day.")
+model DayRecurrence extends Recurrence{
+  @doc("Frequency of the day recurrence.")
+  frequency: Frequency.Day;
+  @doc("Recurrence set to repeat after every 'Interval' days.")
+  interval?: int32;
+  @doc("Time of the day in UTC timezone when the trigger should run.")
+  #suppress "@azure-tools/typespec-azure-core/casing-style" "UTC is an abbervation and should be all caps"
+  runTimeInUTC: utcDateTime;
+}
+
+@added(APIVersions.v2023_04_01_preview)
+@doc("Hour recurrence model when frequency is set as hour.")
+model HourRecurrence extends Recurrence{
+  @doc("Frequency of the hour recurrence.")
+  frequency: Frequency.Hour;
+  @doc("Recurrence set to repeat after every 'Interval' hours.")
+  interval?: int32;
+}
+
+@added(APIVersions.v2023_04_01_preview)
+@doc("Minute recurrence model when frequency is set as minute.")
+model MinuteRecurrence extends Recurrence{
+  @doc("Frequency of the minute recurrence.")
+  frequency: Frequency.Minute;
+  @doc("Recurrence set to repeat after every 'Interval' minutes.")
+  interval?: int32;
+}
+
+@added(APIVersions.v2023_04_01_preview)
+@doc("Month recurrence model when frequency is set as month.")
+model MonthRecurrenceByWeekDays extends Recurrence{
+  @doc("Frequency of the month recurrence.")
+  frequency: Frequency.MonthByDays;
+  @doc("Recurrence set to repeat on the specified days of the week.")
+  weekDayInMonth?: int32[];
+  @doc("Recurrence set to repeat on the specified index of the week. It would mean 'index' Monday every 'interval' Month")
+  index?: int32;
+  @doc("Time of the day in UTC timezone when the trigger should run.")
+  #suppress "@azure-tools/typespec-azure-core/casing-style" "UTC is an abbervation and should be all caps"
+  runTimeInUTC: utcDateTime;
+  @doc("Recurrence set to repeat after every 'Interval' months.")
+  interval?: int32;
+}
+
+@added(APIVersions.v2023_04_01_preview)
+@doc("Month recurrence model when frequency is set as month.")
+model MonthRecurrenceByDates extends Recurrence{
+  @doc("Frequency of the month recurrence.")
+  frequency: Frequency.MonthByDates;
+  @doc("Recurrence set to repeat on the specified dates of the month.")
+  dateInMonth?: int32[];
+  @doc("Time of the day in UTC timezone when the trigger should run.")
+  #suppress "@azure-tools/typespec-azure-core/casing-style" "UTC is an abbervation and should be all caps"
+  runTimeInUTC: utcDateTime;
+  @doc("Recurrence set to repeat after every 'Interval' months.")
+  interval?: int32;
+}
+
+@added(APIVersions.v2023_04_01_preview)
+@doc("Recurrence is set based on cron expression.")
+model RecurrenceWithCron extends Recurrence{
+  @doc("Frequency of the cron recurrence.")
+  frequency: Frequency.Cron;
+  @doc("Cron expression for the recurrence.")
+  cronExpression: string;
+}
+
+@added(APIVersions.v2023_04_01_preview)
+@doc("Week recurrence model when frequency is set as week.")
+model WeekRecurrence extends Recurrence{
+  @doc("Frequency of the week recurrence.")
+  frequency: Frequency.Week;
+  @doc("Recurrence set to repeat on the specified days of the week.")
+  daysOfWeek?: int32[];
+  #suppress "@azure-tools/typespec-azure-core/casing-style" "UTC is an abbervation and should be all caps"
+  @doc("Time of the day in UTC timezone when the trigger should run.")
+  runTimeInUTC: utcDateTime;
+  @doc("Recurrence set to repeat after every 'Interval' weeks.")
+  interval?: int32;
+}
+
+@added(APIVersions.v2023_04_01_preview)
+@doc("Year recurrence model when frequency is set as year.")
+model YearRecurrence extends Recurrence{
+  @doc("Frequency of the year recurrence.")
+  frequency: Frequency.Year;
+  @doc("Recurrence set to repeat on the specified month of the year.")
+  months: int32[];
+  @doc("Recurrence set to repeat on the specified days of selected months of the year.")
+  daysOfWeek?: int32[];
+  @doc("Time of the day in UTC timezone when the trigger should run.")
+  #suppress "@azure-tools/typespec-azure-core/casing-style" "UTC is an abbervation and should be all caps"
+  runTimeInUTC: utcDateTime;
+  @doc("Recurrence set to repeat after every 'Interval' years.")
+  interval?: int32;
+}
+
+@added(APIVersions.v2023_04_01_preview)
+@doc("Recurrence range model.")
+@discriminator("recurrenceRangeType")
+model RecurrenceRange {
+  @doc("Recurrence range type.")
+  recurrenceRangeType: RecurrenceRangeType;
+}
+
+@added(APIVersions.v2023_04_01_preview)
+@doc("Reccurrence range model when recurrence is set to never end.")
+model NoEndRange extends RecurrenceRange{
+  @doc("Recurrence will never end.")
+  recurrenceRangeType: RecurrenceRangeType.NeverEnd;
+}
+
+@added(APIVersions.v2023_04_01_preview)
+@doc("Recurrence range model when recurrence is set to end after specified number of occurrences.")
+model EndAfterOccurencesRange extends RecurrenceRange{
+  @doc("Recurrence will end after specified number of occurrences.")
+  recurrenceRangeType: RecurrenceRangeType.EndAfterOccurences;
+  @doc("Number of occurrences after which the recurrence will end.")
+  numberOfOccurrences: int32;
+}
+
+@added(APIVersions.v2023_04_01_preview)
+@doc("Recurrence range model when recurrence is set to end after specified end date.")
+model EndDateRange extends RecurrenceRange{
+  @doc("Recurrence will end after specified end date.")
+  recurrenceRangeType: RecurrenceRangeType.EndDate;
+  @doc("End date of the recurrence.")
+  endDate: utcDateTime;
+}
+
+@added(APIVersions.v2023_04_01_preview)
+@discriminator("frequency")
+@doc("Recurrence model.")
+model Recurrence {
+  @doc("Frequency of the recurrence.")
+  frequency: Frequency;
+  @doc("Recurrence range type.")
+  recurrenceRangeType: RecurrenceRangeType;
+  @doc("Recurrence range.")
+  recurrenceRange: RecurrenceRange;
+}
+
