@@ -434,15 +434,15 @@ numeric, underscore or hyphen characters.
   >;
 }
 
-@tag("ScheduleTrigger")
+@tag("Triggers")
 @added(APIVersions.v2023_04_01_preview)
-interface ScheduleTrigger {
-  getTrigger is StandardResourceOperations.ResourceRead<ScheduleTestTrigger>;
+interface Triggers {
+  getTrigger is StandardResourceOperations.ResourceRead<Trigger>;
 
-  createorUpdateTrigger is StandardResourceOperations.ResourceCreateOrUpdate<ScheduleTestTrigger>;
+  createorUpdateTrigger is StandardResourceOperations.ResourceCreateOrUpdate<Trigger>;
 
-  deleteTrigger is StandardResourceOperations.ResourceDelete<ScheduleTestTrigger>;
+  deleteTrigger is StandardResourceOperations.ResourceDelete<Trigger>;
 
-  listTrigger is StandardResourceOperations.ResourceList<ScheduleTestTrigger>;
+  listTrigger is StandardResourceOperations.ResourceList<Trigger>;
 
 }

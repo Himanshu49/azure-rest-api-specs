@@ -1,161 +1,182 @@
 import "@typespec/rest";
 import "@typespec/http";
 import "@azure-tools/typespec-azure-core";
+import "@azure-tools/typespec-client-generator-core";
 
 using TypeSpec.Rest;
 using TypeSpec.Http;
 using TypeSpec.Versioning;
+using Azure.ClientGenerator.Core;
 
 namespace Microsoft.LoadTestService;
 
 @doc("Metrics for pass/fail criteria.")
-enum PFMetrics {
-  @doc("Pass fail criteria for response time metric in milliseconds.")
-  response_time_ms,
+union PFMetrics {
+  string,
 
-  @doc("Pass fail criteria for latency metric in milliseconds.") latency,
-  @doc("Pass fail criteria for error metric.") error,
-  @doc("Pass fail criteria for total requests.") requests,
-  @doc("Pass fail criteria for request per second.") requests_per_sec,
+  @doc("Pass fail criteria for response time metric in milliseconds.")
+  "response_time_ms",
+
+  @doc("Pass fail criteria for latency metric in milliseconds.") "latency",
+  @doc("Pass fail criteria for error metric.") "error",
+  @doc("Pass fail criteria for total requests.") "requests",
+  @doc("Pass fail criteria for request per second.") "requests_per_sec",
 }
 
 @doc("Aggregation functions for pass/fail criteria.")
-enum PFAgFunc {
-  @doc("Criteria applies for count value.") count,
-  @doc("Criteria applies for given percentage value.") percentage,
-  @doc("Criteria applies for avg value.") avg,
-  @doc("Criteria applies for 50th percentile value.") p50,
-  @doc("Criteria applies for 90th percentile value.") p90,
-  @doc("Criteria applies for 95th percentile value.") p95,
-  @doc("Criteria applies for 99th percentile value.") p99,
-  @doc("Criteria applies for minimum value.") min,
-  @doc("Criteria applies for maximum value.") max,
+union PFAgFunc {
+  string,
+  @doc("Criteria applies for count value.") "count",
+  @doc("Criteria applies for given percentage value.") "percentage",
+  @doc("Criteria applies for avg value.") "avg",
+  @doc("Criteria applies for 50th percentile value.") "p50",
+  @doc("Criteria applies for 90th percentile value.") "p90",
+  @doc("Criteria applies for 95th percentile value.") "p95",
+  @doc("Criteria applies for 99th percentile value.") "p99",
+  @doc("Criteria applies for minimum value.") "min",
+  @doc("Criteria applies for maximum value.") "max",
 }
 
 @doc("Action to take on failure of pass/fail criteria.")
-enum PFAction {
-  @doc("Test will continue to run even if pass fail metric criteria metric gets failed.")
-  continue,
+union PFAction {
+  string,
 
-  @doc("Test run will stop if pass fail criteria metric is not passed.") stop,
+  @doc("Test will continue to run even if pass fail metric criteria metric gets failed.")
+  continue: "continue",
+
+  @doc("Test run will stop if pass fail criteria metric is not passed.")
+  stop: "stop",
 }
 
 @doc("Pass/fail criteria result.")
-enum PFResult {
-  @doc("Given pass fail criteria metric has passed.") passed,
-  @doc("Given pass fail criteria metric couldn't determine.") undetermined,
-  @doc("Given pass fail criteria metric has failed.") failed,
+union PFResult {
+  string,
+  @doc("Given pass fail criteria metric has passed.") "passed",
+  @doc("Given pass fail criteria metric couldn't determine.") "undetermined",
+  @doc("Given pass fail criteria metric has failed.") "failed",
 }
 
 @doc("Types of secrets supported.")
-enum SecretType {
-  @doc("If the secret is stored in an Azure Key Vault.") AKV_SECRET_URI,
-  @doc("If the secret value provided as plain text.") SECRET_VALUE,
+union SecretType {
+  string,
+  @doc("If the secret is stored in an Azure Key Vault.") "AKV_SECRET_URI",
+  @doc("If the secret value provided as plain text.") "SECRET_VALUE",
 }
 
 @doc("Types of certificates supported.")
-enum CertificateType {
-  @doc("If the certificate is stored in an Azure Key Vault.") AKV_CERT_URI,
+union CertificateType {
+  string,
+  @doc("If the certificate is stored in an Azure Key Vault.") "AKV_CERT_URI",
 }
 
 @doc("Types of file supported.")
-enum FileType {
-  @doc("If the file is a JMX script.") JMX_FILE,
-  @doc("If the file is a user properties file.") USER_PROPERTIES,
+union FileType {
+  string,
+  @doc("If the file is a JMX script.") "JMX_FILE",
+  @doc("If the file is a user properties file.") "USER_PROPERTIES",
 
   @doc("If the file is not among any of the other supported file types.")
-  ADDITIONAL_ARTIFACTS,
+  "ADDITIONAL_ARTIFACTS",
 
   @added(APIVersions.v2023_04_01_preview)
   @doc("If the file is a compressed archive containing a collection of various artifacts or resources.")
-  ZIPPED_ARTIFACTS,
+  "ZIPPED_ARTIFACTS",
 
   @added(APIVersions.v2023_04_01_preview)
   @doc("If the file is a JSON config file to define the requests for a URL test.")
-  URL_TEST_CONFIG_JSON,
+  "URL_TEST_CONFIG_JSON",
 }
 
 @doc("File status.")
-enum FileStatus {
-  @doc("File is not validated.") NOT_VALIDATED,
-  @doc("File is validated.") VALIDATION_SUCCESS,
-  @doc("File validation is failed.") VALIDATION_FAILURE,
-  @doc("File validation is in progress.") VALIDATION_INITIATED,
-  @doc("Validation is not required.") VALIDATION_NOT_REQUIRED,
+union FileStatus {
+  string,
+  @doc("File is not validated.") "NOT_VALIDATED",
+  @doc("File is validated.") "VALIDATION_SUCCESS",
+  @doc("File validation is failed.") "VALIDATION_FAILURE",
+  @doc("File validation is in progress.") "VALIDATION_INITIATED",
+  @doc("Validation is not required.") "VALIDATION_NOT_REQUIRED",
 }
 
 @doc("Test result based on pass/fail criteria.")
-enum PFTestResult {
-  @doc("Pass/fail criteria has passed.") PASSED,
-  @doc("Pass/fail criteria is not applicable.") NOT_APPLICABLE,
-  @doc("Pass/fail criteria has failed.") FAILED,
+union PFTestResult {
+  string,
+  @doc("Pass/fail criteria has passed.") "PASSED",
+  @doc("Pass/fail criteria is not applicable.") "NOT_APPLICABLE",
+  @doc("Pass/fail criteria has failed.") "FAILED",
 }
 
 @doc("Test run status.")
-enum Status {
-  @doc("Test run request is accepted.") ACCEPTED,
-  @doc("Test run is not yet started.") NOTSTARTED,
-  @doc("Test run is provisioning.") PROVISIONING,
-  @doc("Test run is provisioned.") PROVISIONED,
-  @doc("Test run is getting configured.") CONFIGURING,
-  @doc("Test run configuration is done.") CONFIGURED,
-  @doc("Test run has started executing.") EXECUTING,
-  @doc("Test run execution is completed.") EXECUTED,
-  @doc("Test run is getting deprovisioned.") DEPROVISIONING,
-  @doc("Test run is deprovisioned.") DEPROVISIONED,
-  @doc("Test run is completed.") DONE,
-  @doc("Test run is being cancelled.") CANCELLING,
-  @doc("Test run request is cancelled.") CANCELLED,
-  @doc("Test run request is failed.") FAILED,
-  @doc("Test run JMX file is validated.") VALIDATION_SUCCESS,
-  @doc("Test run JMX file validation is failed.") VALIDATION_FAILURE,
+union Status {
+  string,
+  @doc("Test run request is accepted.") "ACCEPTED",
+  @doc("Test run is not yet started.") "NOTSTARTED",
+  @doc("Test run is provisioning.") "PROVISIONING",
+  @doc("Test run is provisioned.") "PROVISIONED",
+  @doc("Test run is getting configured.") "CONFIGURING",
+  @doc("Test run configuration is done.") "CONFIGURED",
+  @doc("Test run has started executing.") "EXECUTING",
+  @doc("Test run execution is completed.") "EXECUTED",
+  @doc("Test run is getting deprovisioned.") "DEPROVISIONING",
+  @doc("Test run is deprovisioned.") "DEPROVISIONED",
+  @doc("Test run is completed.") "DONE",
+  @doc("Test run is being cancelled.") "CANCELLING",
+  @doc("Test run request is cancelled.") "CANCELLED",
+  @doc("Test run request is failed.") "FAILED",
+  @doc("Test run JMX file is validated.") "VALIDATION_SUCCESS",
+  @doc("Test run JMX file validation is failed.") "VALIDATION_FAILURE",
 }
 
 @doc("Aggregation type.")
-enum AggregationType {
-  @doc("Average value.") Average,
-  @doc("Total count.") Count,
-  @doc("Aggregation will be average in this case.") None,
-  @doc("Total sum.") Total,
-  @doc("90th percentile.") Percentile90,
-  @doc("95th percentile.") Percentile95,
-  @doc("99th percentile.") Percentile99,
+union AggregationType {
+  string,
+  @doc("Average value.") "Average",
+  @doc("Total count.") "Count",
+  @doc("Aggregation will be average in this case.") "None",
+  @doc("Total sum.") "Total",
+  @doc("90th percentile.") "Percentile90",
+  @doc("95th percentile.") "Percentile95",
+  @doc("99th percentile.") "Percentile99",
 }
 
 @doc("Metric unit.")
-enum MetricUnit {
-  @doc("No unit specified.") NotSpecified,
-  @doc("Percentage.") Percent,
-  @doc("Value count.") Count,
-  @doc("Seconds.") Seconds,
-  @doc("Milliseconds") Milliseconds,
-  @doc("Bytes") Bytes,
-  @doc("Bytes per second") BytesPerSecond,
-  @doc("Count per second") CountPerSecond,
+union MetricUnit {
+  string,
+  @doc("No unit specified.") "NotSpecified",
+  @doc("Percentage.") "Percent",
+  @doc("Value count.") "Count",
+  @doc("Seconds.") "Seconds",
+  @doc("Milliseconds") "Milliseconds",
+  @doc("Bytes") "Bytes",
+  @doc("Bytes per second") "BytesPerSecond",
+  @doc("Count per second") "CountPerSecond",
 }
 
 @doc("Time Grain")
-enum TimeGrain {
+union TimeGrain {
+  string,
+
   @doc("5 seconds, available only if test run duration is less than 10 minutes.")
-  PT5S,
+  PT5S: "PT5S",
 
   @doc("10 seconds, available only if test run duration is less than 10 minutes.")
-  PT10S,
+  PT10S: "PT10S",
 
-  @doc("1 minute") PT1M,
+  @doc("1 minute")
+  PT1M: "PT1M",
 
   @doc("5 minutes, available only if test run duration is greater than 1 minute.")
-  PT5M,
+  PT5M: "PT5M",
 
   @doc("1 hour, available only if test run duration is greater than 1 minute.")
-  PT1H,
+  PT1H: "PT1H",
 }
 
 @added(APIVersions.v2023_04_01_preview)
 @doc("Test kind")
-enum TestKind {
-  @doc("URL Test") URL,
-  @doc("JMX Test") JMX,
+union TestKind {
+  string,
+  @doc("URL Test") "URL",
+  @doc("JMX Test") "JMX",
 }
 
 @doc("Test file info.")
@@ -892,7 +913,7 @@ model MetricDimensionsRequest {
   The timespan of the query. It is a string with the following format 'startDateTime_ISO/endDateTime_ISO'.
   """)
   @query
-  @projectedName("python", "time_interval")
+  @clientName("time_interval", "python")
   timespan: string;
 }
 
@@ -1059,128 +1080,229 @@ alias ResourceCreatedResponse<T extends TypeSpec.Reflection.Model> = TypeSpec.Ht
 alias ResourceCreatedOrOkResponse<T extends TypeSpec.Reflection.Model> = ResourceCreatedResponse<T> | (TypeSpec.Http.Response<200> &
   T);
 
-
 @added(APIVersions.v2023_04_01_preview)
-model MultipleTestsTrigger extends Trigger {
-  testIds: string[];
+@doc("Frequency of reccurence for a trigger.")
+union Frequency {
+  string,
+  Cron: "Cron",
+  Minute: "Minute",
+  Hour: "Hour",
+  Day: "Day",
+  Week: "Week",
+  MonthByDays: "MonthByDays",
+  MonthByDates: "MonthByDates",
+  Year: "Year",
 }
 
 @added(APIVersions.v2023_04_01_preview)
-model SingleTestTrigger extends Trigger {
-  testId: string;
+@doc("Recurrence range type for a trigger.")
+union RecurrenceRangeType {
+  string,
+  /**Signifies recurrence will end after EndDate. */ 
+  EndDate: "EndDate",
+  /**Signifies recurrence will end after NumberOfOccurrences. */
+  EndAfterOccurences: "EndAfterOccurences",
+  /**Signifies recurrence will never end. */
+  NeverEnd: "NeverEnd",
 }
 
 @added(APIVersions.v2023_04_01_preview)
-model ScheduleTestTrigger extends SingleTestTrigger{
+@doc("Current state of a trigger.")
+union TriggerState {
+  string,
+  Active: "Active",
+  Paused: "Paused",
+  Completed: "Completed",
+  Disabled: "Disabled",
+}
+
+@added(APIVersions.v2023_04_01_preview)
+@doc("Type of a trigger.")
+union TriggerType {
+  string,
+  ScheduleTrigger: "ScheduleTrigger",
+}
+
+@added(APIVersions.v2023_04_01_preview)
+@doc("ScheduleTestsTrigger model.")
+model ScheduleTestsTrigger extends ScheduleTrigger{
+  @doc("The type of the trigger is ScheduleTrigger.")
+  triggerType: TriggerType.ScheduleTrigger;
+  @doc("The test ids to be triggered by this schedule trigger.")
+  testids: string[];
+}
+
+@added(APIVersions.v2023_04_01_preview)
+@doc("ScheduleTrigger model.")
+model ScheduleTrigger is Trigger{
+  @doc("Start time of the trigger in UTC timezone.")
+  #suppress "@azure-tools/typespec-azure-core/casing-style" "UTC is an abbervation and should be all caps"
   startTimeInUTC?: utcDateTime;
-  isRecurring?: boolean;
+  @doc("Whether the trigger is recurring. Default is false.")
+  isRecurring?: boolean = false;
+  @doc("Recurrence details of the trigger.")
   recurrence: Recurrence;
 }
 
 @added(APIVersions.v2023_04_01_preview)
+@resource("trigger")
+@discriminator("triggerType")
+@doc("Trigger model.")
+model Trigger {
+  @doc("The name of the trigger.")
+  triggerName: string;
+  @key
+  @doc("The unique identifier of the trigger.")
+  triggerId: string;
+  @doc("The description of the trigger.")
+  description: string;
+  @doc("The type of the trigger.")
+  triggerType: TriggerType;
+  @doc("The current state of the trigger.")
+  triggerState: TriggerState;
+}
+
+@added(APIVersions.v2023_04_01_preview)
+@doc("Day recurrence model when frequency is set as day.")
 model DayRecurrence extends Recurrence{
+  @doc("Frequency of the day recurrence.")
   frequency: Frequency.Day;
+  @doc("Recurrence set to repeat after every 'Interval' days.")
   interval?: int32;
+  @doc("Time of the day in UTC timezone when the trigger should run.")
+  #suppress "@azure-tools/typespec-azure-core/casing-style" "UTC is an abbervation and should be all caps"
   runTimeInUTC: utcDateTime;
 }
 
 @added(APIVersions.v2023_04_01_preview)
+@doc("Hour recurrence model when frequency is set as hour.")
 model HourRecurrence extends Recurrence{
+  @doc("Frequency of the hour recurrence.")
   frequency: Frequency.Hour;
+  @doc("Recurrence set to repeat after every 'Interval' hours.")
   interval?: int32;
 }
 
 @added(APIVersions.v2023_04_01_preview)
+@doc("Minute recurrence model when frequency is set as minute.")
 model MinuteRecurrence extends Recurrence{
+  @doc("Frequency of the minute recurrence.")
   frequency: Frequency.Minute;
+  @doc("Recurrence set to repeat after every 'Interval' minutes.")
   interval?: int32;
 }
 
 @added(APIVersions.v2023_04_01_preview)
-model MonthRecurrence extends Recurrence{
-  frequency: Frequency.Month;
-  dateInMonth?: int32[];
+@doc("Month recurrence model when frequency is set as month.")
+model MonthRecurrenceByWeekDays extends Recurrence{
+  @doc("Frequency of the month recurrence.")
+  frequency: Frequency.MonthByDays;
+  @doc("Recurrence set to repeat on the specified days of the week.")
   weekDayInMonth?: int32[];
+  @doc("Recurrence set to repeat on the specified index of the week. It would mean 'index' Monday every 'interval' Month")
   index?: int32;
+  @doc("Time of the day in UTC timezone when the trigger should run.")
+  #suppress "@azure-tools/typespec-azure-core/casing-style" "UTC is an abbervation and should be all caps"
   runTimeInUTC: utcDateTime;
+  @doc("Recurrence set to repeat after every 'Interval' months.")
   interval?: int32;
 }
 
 @added(APIVersions.v2023_04_01_preview)
+@doc("Month recurrence model when frequency is set as month.")
+model MonthRecurrenceByDates extends Recurrence{
+  @doc("Frequency of the month recurrence.")
+  frequency: Frequency.MonthByDates;
+  @doc("Recurrence set to repeat on the specified dates of the month.")
+  dateInMonth?: int32[];
+  @doc("Time of the day in UTC timezone when the trigger should run.")
+  #suppress "@azure-tools/typespec-azure-core/casing-style" "UTC is an abbervation and should be all caps"
+  runTimeInUTC: utcDateTime;
+  @doc("Recurrence set to repeat after every 'Interval' months.")
+  interval?: int32;
+}
+
+@added(APIVersions.v2023_04_01_preview)
+@doc("Recurrence is set based on cron expression.")
 model RecurrenceWithCron extends Recurrence{
-  frequency: Frequency.Unspecified;
+  @doc("Frequency of the cron recurrence.")
+  frequency: Frequency.Cron;
+  @doc("Cron expression for the recurrence.")
   cronExpression: string;
 }
 
 @added(APIVersions.v2023_04_01_preview)
+@doc("Week recurrence model when frequency is set as week.")
 model WeekRecurrence extends Recurrence{
+  @doc("Frequency of the week recurrence.")
   frequency: Frequency.Week;
+  @doc("Recurrence set to repeat on the specified days of the week.")
   daysOfWeek?: int32[];
+  #suppress "@azure-tools/typespec-azure-core/casing-style" "UTC is an abbervation and should be all caps"
+  @doc("Time of the day in UTC timezone when the trigger should run.")
   runTimeInUTC: utcDateTime;
+  @doc("Recurrence set to repeat after every 'Interval' weeks.")
   interval?: int32;
 }
 
 @added(APIVersions.v2023_04_01_preview)
+@doc("Year recurrence model when frequency is set as year.")
 model YearRecurrence extends Recurrence{
+  @doc("Frequency of the year recurrence.")
   frequency: Frequency.Year;
+  @doc("Recurrence set to repeat on the specified month of the year.")
+  months: int32[];
+  @doc("Recurrence set to repeat on the specified days of selected months of the year.")
   daysOfWeek?: int32[];
+  @doc("Time of the day in UTC timezone when the trigger should run.")
+  #suppress "@azure-tools/typespec-azure-core/casing-style" "UTC is an abbervation and should be all caps"
   runTimeInUTC: utcDateTime;
+  @doc("Recurrence set to repeat after every 'Interval' years.")
   interval?: int32;
+}
+
+@added(APIVersions.v2023_04_01_preview)
+@doc("Recurrence range model.")
+@discriminator("recurrenceRangeType")
+model RecurrenceRange {
+  @doc("Recurrence range type.")
+  recurrenceRangeType: RecurrenceRangeType;
+}
+
+@added(APIVersions.v2023_04_01_preview)
+@doc("Reccurrence range model when recurrence is set to never end.")
+model NoEndRange extends RecurrenceRange{
+  @doc("Recurrence will never end.")
+  recurrenceRangeType: RecurrenceRangeType.NeverEnd;
+}
+
+@added(APIVersions.v2023_04_01_preview)
+@doc("Recurrence range model when recurrence is set to end after specified number of occurrences.")
+model EndAfterOccurencesRange extends RecurrenceRange{
+  @doc("Recurrence will end after specified number of occurrences.")
+  recurrenceRangeType: RecurrenceRangeType.EndAfterOccurences;
+  @doc("Number of occurrences after which the recurrence will end.")
+  numberOfOccurrences: int32;
+}
+
+@added(APIVersions.v2023_04_01_preview)
+@doc("Recurrence range model when recurrence is set to end after specified end date.")
+model EndDateRange extends RecurrenceRange{
+  @doc("Recurrence will end after specified end date.")
+  recurrenceRangeType: RecurrenceRangeType.EndDate;
+  @doc("End date of the recurrence.")
+  endDate: utcDateTime;
 }
 
 @added(APIVersions.v2023_04_01_preview)
 @discriminator("frequency")
+@doc("Recurrence model.")
 model Recurrence {
+  @doc("Frequency of the recurrence.")
   frequency: Frequency;
+  @doc("Recurrence range type.")
   recurrenceRangeType: RecurrenceRangeType;
-  endTimeInUTC: utcDateTime;
-  numberOfOccurrences?: int32;
+  @doc("Recurrence range.")
+  recurrenceRange: RecurrenceRange;
 }
 
-@added(APIVersions.v2023_04_01_preview)
-enum Frequency {
-  Unspecified,
-  Minute,
-  Hour,
-  Day,
-  Week,
-  Month,
-  Year
-}
-
-@added(APIVersions.v2023_04_01_preview)
-enum RecurrenceRangeType {
-  EndDate,
-  EndAfterOccurences,
-  NeverEnd
-}
-@added(APIVersions.v2023_04_01_preview)
-@resource("trigger")
-model Trigger {
-  triggerName: string;
-  @key
-  triggerId: string;
-  description: string;
-  triggerAction: TriggerAction;
-  type: TriggerType;
-  state: TriggerState;
-}
-
-@added(APIVersions.v2023_04_01_preview)
-enum TriggerAction {
-  SingleTestRun,
-  MultipleTestRuns
-}
-
-@added(APIVersions.v2023_04_01_preview)
-enum TriggerState {
-  Active,
-  Paused,
-  Completed,
-  Disabled
-}
-
-@added(APIVersions.v2023_04_01_preview)
-enum TriggerType {
-  ScheduleTrigger,
-}

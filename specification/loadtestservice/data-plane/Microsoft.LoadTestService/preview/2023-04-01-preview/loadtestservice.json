@@ -57,7 +57,7 @@
       "name": "TestRun"
     },
     {
-      "name": "ScheduleTrigger"
+      "name": "Triggers"
     }
   ],
   "paths": {
@@ -1615,9 +1615,9 @@
     },
     "/trigger": {
       "get": {
-        "operationId": "ScheduleTrigger_ListTrigger",
+        "operationId": "Triggers_ListTrigger",
         "tags": [
-          "ScheduleTrigger"
+          "Triggers"
         ],
         "description": "Resource list operation template.",
         "parameters": [
@@ -1629,7 +1629,7 @@
           "200": {
             "description": "The request has succeeded.",
             "schema": {
-              "$ref": "#/definitions/PagedScheduleTestTrigger"
+              "$ref": "#/definitions/PagedTrigger"
             }
           },
           "default": {
@@ -1652,9 +1652,9 @@
     },
     "/trigger/{triggerId}": {
       "get": {
-        "operationId": "ScheduleTrigger_GetTrigger",
+        "operationId": "Triggers_GetTrigger",
         "tags": [
-          "ScheduleTrigger"
+          "Triggers"
         ],
         "description": "Resource read operation template.",
         "parameters": [
@@ -1664,6 +1664,7 @@
           {
             "name": "triggerId",
             "in": "path",
+            "description": "The unique identifier of the trigger.",
             "required": true,
             "type": "string"
           }
@@ -1672,7 +1673,7 @@
           "200": {
             "description": "The request has succeeded.",
             "schema": {
-              "$ref": "#/definitions/ScheduleTestTrigger"
+              "$ref": "#/definitions/Trigger"
             }
           },
           "default": {
@@ -1690,9 +1691,9 @@
         }
       },
       "patch": {
-        "operationId": "ScheduleTrigger_CreateorUpdateTrigger",
+        "operationId": "Triggers_CreateorUpdateTrigger",
         "tags": [
-          "ScheduleTrigger"
+          "Triggers"
         ],
         "description": "Create or update operation template.",
         "consumes": [
@@ -1705,6 +1706,7 @@
           {
             "name": "triggerId",
             "in": "path",
+            "description": "The unique identifier of the trigger.",
             "required": true,
             "type": "string"
           },
@@ -1714,7 +1716,7 @@
             "description": "The resource instance.",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/ScheduleTestTriggerCreateOrUpdate"
+              "$ref": "#/definitions/TriggerCreateOrUpdate"
             },
             "x-ms-client-name": "resource"
           }
@@ -1723,13 +1725,13 @@
           "200": {
             "description": "The request has succeeded.",
             "schema": {
-              "$ref": "#/definitions/ScheduleTestTrigger"
+              "$ref": "#/definitions/Trigger"
             }
           },
           "201": {
             "description": "The request has succeeded and a new resource has been created as a result.",
             "schema": {
-              "$ref": "#/definitions/ScheduleTestTrigger"
+              "$ref": "#/definitions/Trigger"
             }
           },
           "default": {
@@ -1747,9 +1749,9 @@
         }
       },
       "delete": {
-        "operationId": "ScheduleTrigger_DeleteTrigger",
+        "operationId": "Triggers_DeleteTrigger",
         "tags": [
-          "ScheduleTrigger"
+          "Triggers"
         ],
         "description": "Resource delete operation template.",
         "parameters": [
@@ -1759,6 +1761,7 @@
           {
             "name": "triggerId",
             "in": "path",
+            "description": "The unique identifier of the trigger.",
             "required": true,
             "type": "string"
           }
@@ -2038,47 +2041,6 @@
         ]
       }
     },
-    "DayRecurrence": {
-      "type": "object",
-      "properties": {
-        "interval": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "runTimeInUTC": {
-          "type": "string",
-          "format": "date-time"
-        }
-      },
-      "required": [
-        "runTimeInUTC"
-      ],
-      "allOf": [
-        {
-          "$ref": "#/definitions/Recurrence"
-        }
-      ],
-      "x-ms-discriminator-value": "Day"
-    },
-    "DayRecurrenceCreateOrUpdate": {
-      "type": "object",
-      "properties": {
-        "interval": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "runTimeInUTC": {
-          "type": "string",
-          "format": "date-time"
-        }
-      },
-      "allOf": [
-        {
-          "$ref": "#/definitions/RecurrenceCreateOrUpdate"
-        }
-      ],
-      "x-ms-discriminator-value": "Day"
-    },
     "DimensionFilter": {
       "type": "object",
       "description": "Dimension name and values to filter",
@@ -2227,52 +2189,6 @@
           }
         ]
       }
-    },
-    "Frequency": {
-      "type": "string",
-      "enum": [
-        "Unspecified",
-        "Minute",
-        "Hour",
-        "Day",
-        "Week",
-        "Month",
-        "Year"
-      ],
-      "x-ms-enum": {
-        "name": "Frequency",
-        "modelAsString": true
-      }
-    },
-    "HourRecurrence": {
-      "type": "object",
-      "properties": {
-        "interval": {
-          "type": "integer",
-          "format": "int32"
-        }
-      },
-      "allOf": [
-        {
-          "$ref": "#/definitions/Recurrence"
-        }
-      ],
-      "x-ms-discriminator-value": "Hour"
-    },
-    "HourRecurrenceCreateOrUpdate": {
-      "type": "object",
-      "properties": {
-        "interval": {
-          "type": "integer",
-          "format": "int32"
-        }
-      },
-      "allOf": [
-        {
-          "$ref": "#/definitions/RecurrenceCreateOrUpdate"
-        }
-      ],
-      "x-ms-discriminator-value": "Hour"
     },
     "LoadTestConfiguration": {
       "type": "object",
@@ -2518,148 +2434,6 @@
         "value"
       ]
     },
-    "MinuteRecurrence": {
-      "type": "object",
-      "properties": {
-        "interval": {
-          "type": "integer",
-          "format": "int32"
-        }
-      },
-      "allOf": [
-        {
-          "$ref": "#/definitions/Recurrence"
-        }
-      ],
-      "x-ms-discriminator-value": "Minute"
-    },
-    "MinuteRecurrenceCreateOrUpdate": {
-      "type": "object",
-      "properties": {
-        "interval": {
-          "type": "integer",
-          "format": "int32"
-        }
-      },
-      "allOf": [
-        {
-          "$ref": "#/definitions/RecurrenceCreateOrUpdate"
-        }
-      ],
-      "x-ms-discriminator-value": "Minute"
-    },
-    "MonthRecurrence": {
-      "type": "object",
-      "properties": {
-        "dateInMonth": {
-          "type": "array",
-          "items": {
-            "type": "integer",
-            "format": "int32"
-          }
-        },
-        "weekDayInMonth": {
-          "type": "array",
-          "items": {
-            "type": "integer",
-            "format": "int32"
-          }
-        },
-        "index": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "runTimeInUTC": {
-          "type": "string",
-          "format": "date-time"
-        },
-        "interval": {
-          "type": "integer",
-          "format": "int32"
-        }
-      },
-      "required": [
-        "runTimeInUTC"
-      ],
-      "allOf": [
-        {
-          "$ref": "#/definitions/Recurrence"
-        }
-      ],
-      "x-ms-discriminator-value": "Month"
-    },
-    "MonthRecurrenceCreateOrUpdate": {
-      "type": "object",
-      "properties": {
-        "dateInMonth": {
-          "type": "array",
-          "items": {
-            "type": "integer",
-            "format": "int32"
-          }
-        },
-        "weekDayInMonth": {
-          "type": "array",
-          "items": {
-            "type": "integer",
-            "format": "int32"
-          }
-        },
-        "index": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "runTimeInUTC": {
-          "type": "string",
-          "format": "date-time"
-        },
-        "interval": {
-          "type": "integer",
-          "format": "int32"
-        }
-      },
-      "allOf": [
-        {
-          "$ref": "#/definitions/RecurrenceCreateOrUpdate"
-        }
-      ],
-      "x-ms-discriminator-value": "Month"
-    },
-    "MultipleTestsTrigger": {
-      "type": "object",
-      "properties": {
-        "testIds": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        }
-      },
-      "required": [
-        "testIds"
-      ],
-      "allOf": [
-        {
-          "$ref": "#/definitions/Trigger"
-        }
-      ]
-    },
-    "MultipleTestsTriggerCreateOrUpdate": {
-      "type": "object",
-      "properties": {
-        "testIds": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        }
-      },
-      "allOf": [
-        {
-          "$ref": "#/definitions/TriggerCreateOrUpdate"
-        }
-      ]
-    },
     "NameAndDesc": {
       "type": "object",
       "description": "The name and description",
@@ -2877,28 +2651,6 @@
         ]
       }
     },
-    "PagedScheduleTestTrigger": {
-      "type": "object",
-      "description": "Paged collection of ScheduleTestTrigger items",
-      "properties": {
-        "value": {
-          "type": "array",
-          "description": "The ScheduleTestTrigger items on this page",
-          "items": {
-            "$ref": "#/definitions/ScheduleTestTrigger"
-          },
-          "x-ms-identifiers": []
-        },
-        "nextLink": {
-          "type": "string",
-          "format": "uri",
-          "description": "The link to the next page of items"
-        }
-      },
-      "required": [
-        "value"
-      ]
-    },
     "PagedTest": {
       "type": "object",
       "description": "Paged collection of Test items",
@@ -2952,6 +2704,28 @@
           "description": "The TestRun items on this page",
           "items": {
             "$ref": "#/definitions/TestRun"
+          },
+          "x-ms-identifiers": []
+        },
+        "nextLink": {
+          "type": "string",
+          "format": "uri",
+          "description": "The link to the next page of items"
+        }
+      },
+      "required": [
+        "value"
+      ]
+    },
+    "PagedTrigger": {
+      "type": "object",
+      "description": "Paged collection of Trigger items",
+      "properties": {
+        "value": {
+          "type": "array",
+          "description": "The Trigger items on this page",
+          "items": {
+            "$ref": "#/definitions/Trigger"
           },
           "x-ms-identifiers": []
         },
@@ -3041,97 +2815,6 @@
         }
       }
     },
-    "Recurrence": {
-      "type": "object",
-      "properties": {
-        "frequency": {
-          "$ref": "#/definitions/Frequency"
-        },
-        "recurrenceRangeType": {
-          "$ref": "#/definitions/RecurrenceRangeType"
-        },
-        "endTimeInUTC": {
-          "type": "string",
-          "format": "date-time"
-        },
-        "numberOfOccurrences": {
-          "type": "integer",
-          "format": "int32"
-        }
-      },
-      "discriminator": "frequency",
-      "required": [
-        "frequency",
-        "recurrenceRangeType",
-        "endTimeInUTC"
-      ]
-    },
-    "RecurrenceCreateOrUpdate": {
-      "type": "object",
-      "properties": {
-        "frequency": {
-          "$ref": "#/definitions/Frequency"
-        },
-        "recurrenceRangeType": {
-          "$ref": "#/definitions/RecurrenceRangeType"
-        },
-        "endTimeInUTC": {
-          "type": "string",
-          "format": "date-time"
-        },
-        "numberOfOccurrences": {
-          "type": "integer",
-          "format": "int32"
-        }
-      },
-      "discriminator": "frequency",
-      "required": [
-        "frequency"
-      ]
-    },
-    "RecurrenceRangeType": {
-      "type": "string",
-      "enum": [
-        "EndDate",
-        "EndAfterOccurences",
-        "NeverEnd"
-      ],
-      "x-ms-enum": {
-        "name": "RecurrenceRangeType",
-        "modelAsString": true
-      }
-    },
-    "RecurrenceWithCron": {
-      "type": "object",
-      "properties": {
-        "cronExpression": {
-          "type": "string"
-        }
-      },
-      "required": [
-        "cronExpression"
-      ],
-      "allOf": [
-        {
-          "$ref": "#/definitions/Recurrence"
-        }
-      ],
-      "x-ms-discriminator-value": "Unspecified"
-    },
-    "RecurrenceWithCronCreateOrUpdate": {
-      "type": "object",
-      "properties": {
-        "cronExpression": {
-          "type": "string"
-        }
-      },
-      "allOf": [
-        {
-          "$ref": "#/definitions/RecurrenceCreateOrUpdate"
-        }
-      ],
-      "x-ms-discriminator-value": "Unspecified"
-    },
     "ResourceMetric": {
       "type": "object",
       "description": "Associated metric definition for particular metrics of the azure resource (\nRefer :\nhttps://docs.microsoft.com/en-us/rest/api/monitor/metric-definitions/list#metricdefinition).",
@@ -3212,49 +2895,6 @@
         }
       }
     },
-    "ScheduleTestTrigger": {
-      "type": "object",
-      "properties": {
-        "startTimeInUTC": {
-          "type": "string",
-          "format": "date-time"
-        },
-        "isRecurring": {
-          "type": "boolean"
-        },
-        "recurrence": {
-          "$ref": "#/definitions/Recurrence"
-        }
-      },
-      "required": [
-        "recurrence"
-      ],
-      "allOf": [
-        {
-          "$ref": "#/definitions/SingleTestTrigger"
-        }
-      ]
-    },
-    "ScheduleTestTriggerCreateOrUpdate": {
-      "type": "object",
-      "properties": {
-        "startTimeInUTC": {
-          "type": "string",
-          "format": "date-time"
-        },
-        "isRecurring": {
-          "type": "boolean"
-        },
-        "recurrence": {
-          "$ref": "#/definitions/RecurrenceCreateOrUpdate"
-        }
-      },
-      "allOf": [
-        {
-          "$ref": "#/definitions/SingleTestTriggerCreateOrUpdate"
-        }
-      ]
-    },
     "Secret": {
       "type": "object",
       "description": "Secret",
@@ -3292,35 +2932,6 @@
           }
         ]
       }
-    },
-    "SingleTestTrigger": {
-      "type": "object",
-      "properties": {
-        "testId": {
-          "type": "string"
-        }
-      },
-      "required": [
-        "testId"
-      ],
-      "allOf": [
-        {
-          "$ref": "#/definitions/Trigger"
-        }
-      ]
-    },
-    "SingleTestTriggerCreateOrUpdate": {
-      "type": "object",
-      "properties": {
-        "testId": {
-          "type": "string"
-        }
-      },
-      "allOf": [
-        {
-          "$ref": "#/definitions/TriggerCreateOrUpdate"
-        }
-      ]
     },
     "Status": {
       "type": "string",
@@ -4401,71 +4012,71 @@
     },
     "Trigger": {
       "type": "object",
+      "description": "Trigger model.",
       "properties": {
         "triggerName": {
-          "type": "string"
+          "type": "string",
+          "description": "The name of the trigger."
         },
         "triggerId": {
-          "type": "string"
+          "type": "string",
+          "description": "The unique identifier of the trigger."
         },
         "description": {
-          "type": "string"
+          "type": "string",
+          "description": "The description of the trigger."
         },
-        "triggerAction": {
-          "$ref": "#/definitions/TriggerAction"
+        "triggerType": {
+          "$ref": "#/definitions/TriggerType",
+          "description": "The type of the trigger."
         },
-        "type": {
-          "$ref": "#/definitions/TriggerType"
-        },
-        "state": {
-          "$ref": "#/definitions/TriggerState"
+        "triggerState": {
+          "$ref": "#/definitions/TriggerState",
+          "description": "The current state of the trigger."
         }
       },
+      "discriminator": "triggerType",
       "required": [
         "triggerName",
         "triggerId",
         "description",
-        "triggerAction",
-        "type",
-        "state"
+        "triggerType",
+        "triggerState"
       ]
-    },
-    "TriggerAction": {
-      "type": "string",
-      "enum": [
-        "SingleTestRun",
-        "MultipleTestRuns"
-      ],
-      "x-ms-enum": {
-        "name": "TriggerAction",
-        "modelAsString": true
-      }
     },
     "TriggerCreateOrUpdate": {
       "type": "object",
+      "description": "Trigger model.",
       "properties": {
         "triggerName": {
-          "type": "string"
+          "type": "string",
+          "description": "The name of the trigger."
         },
         "triggerId": {
-          "type": "string"
+          "type": "string",
+          "description": "The unique identifier of the trigger."
         },
         "description": {
-          "type": "string"
+          "type": "string",
+          "description": "The description of the trigger."
         },
-        "triggerAction": {
-          "$ref": "#/definitions/TriggerAction"
+        "triggerType": {
+          "$ref": "#/definitions/TriggerType",
+          "description": "The type of the trigger."
         },
-        "type": {
-          "$ref": "#/definitions/TriggerType"
-        },
-        "state": {
-          "$ref": "#/definitions/TriggerState"
+        "triggerState": {
+          "$ref": "#/definitions/TriggerState",
+          "description": "The current state of the trigger."
         }
-      }
+      },
+      "discriminator": "triggerType",
+      "required": [
+        "triggerType"
+      ]
     },
     "TriggerState": {
       "type": "string",
+      "description": "Current state of a trigger.",
       "enum": [
         "Active",
         "Paused",
@@ -4474,128 +4085,43 @@
       ],
       "x-ms-enum": {
         "name": "TriggerState",
-        "modelAsString": true
+        "modelAsString": true,
+        "values": [
+          {
+            "name": "Active",
+            "value": "Active"
+          },
+          {
+            "name": "Paused",
+            "value": "Paused"
+          },
+          {
+            "name": "Completed",
+            "value": "Completed"
+          },
+          {
+            "name": "Disabled",
+            "value": "Disabled"
+          }
+        ]
       }
     },
     "TriggerType": {
       "type": "string",
+      "description": "Type of a trigger.",
       "enum": [
         "ScheduleTrigger"
       ],
       "x-ms-enum": {
         "name": "TriggerType",
-        "modelAsString": true
+        "modelAsString": true,
+        "values": [
+          {
+            "name": "ScheduleTrigger",
+            "value": "ScheduleTrigger"
+          }
+        ]
       }
-    },
-    "WeekRecurrence": {
-      "type": "object",
-      "properties": {
-        "daysOfWeek": {
-          "type": "array",
-          "items": {
-            "type": "integer",
-            "format": "int32"
-          }
-        },
-        "runTimeInUTC": {
-          "type": "string",
-          "format": "date-time"
-        },
-        "interval": {
-          "type": "integer",
-          "format": "int32"
-        }
-      },
-      "required": [
-        "runTimeInUTC"
-      ],
-      "allOf": [
-        {
-          "$ref": "#/definitions/Recurrence"
-        }
-      ],
-      "x-ms-discriminator-value": "Week"
-    },
-    "WeekRecurrenceCreateOrUpdate": {
-      "type": "object",
-      "properties": {
-        "daysOfWeek": {
-          "type": "array",
-          "items": {
-            "type": "integer",
-            "format": "int32"
-          }
-        },
-        "runTimeInUTC": {
-          "type": "string",
-          "format": "date-time"
-        },
-        "interval": {
-          "type": "integer",
-          "format": "int32"
-        }
-      },
-      "allOf": [
-        {
-          "$ref": "#/definitions/RecurrenceCreateOrUpdate"
-        }
-      ],
-      "x-ms-discriminator-value": "Week"
-    },
-    "YearRecurrence": {
-      "type": "object",
-      "properties": {
-        "daysOfWeek": {
-          "type": "array",
-          "items": {
-            "type": "integer",
-            "format": "int32"
-          }
-        },
-        "runTimeInUTC": {
-          "type": "string",
-          "format": "date-time"
-        },
-        "interval": {
-          "type": "integer",
-          "format": "int32"
-        }
-      },
-      "required": [
-        "runTimeInUTC"
-      ],
-      "allOf": [
-        {
-          "$ref": "#/definitions/Recurrence"
-        }
-      ],
-      "x-ms-discriminator-value": "Year"
-    },
-    "YearRecurrenceCreateOrUpdate": {
-      "type": "object",
-      "properties": {
-        "daysOfWeek": {
-          "type": "array",
-          "items": {
-            "type": "integer",
-            "format": "int32"
-          }
-        },
-        "runTimeInUTC": {
-          "type": "string",
-          "format": "date-time"
-        },
-        "interval": {
-          "type": "integer",
-          "format": "int32"
-        }
-      },
-      "allOf": [
-        {
-          "$ref": "#/definitions/RecurrenceCreateOrUpdate"
-        }
-      ],
-      "x-ms-discriminator-value": "Year"
     }
   },
   "parameters": {
