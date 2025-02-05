@@ -40,6 +40,16 @@ interface AdministrationOperations {
   deleteTestProfile is TestProfileAdministration.deleteTestProfile;
   getTestProfile is TestProfileAdministration.getTestProfile;
   listTestProfiles is TestProfileAdministration.listTestProfiles;
+
+  createOrUpdateTrigger is TriggerAdministration.createOrUpdateTrigger;
+  deleteTrigger is TriggerAdministration.deleteTrigger;
+  getTrigger is TriggerAdministration.getTrigger;
+  listTrigger is TriggerAdministration.listTrigger;
+
+  createOrUpdateNotificationRule is NotificationRuleAdministration.createOrUpdateNotificationRule;
+  deleteNotificationRule is NotificationRuleAdministration.deleteNotificationRule;
+  getNotificationRule is NotificationRuleAdministration.getNotificationRule;
+  listNotificationRule is NotificationRuleAdministration.listNotificationRule;
 }
 
 #suppress "@azure-tools/typespec-azure-core/use-standard-operations"
